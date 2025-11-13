@@ -1,9 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>車両管理・運搬管理システム</title>
+    <title>ダンプトラック運搬台数管理システム</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -11,738 +15,1819 @@
             box-sizing: border-box;
         }
 
+```
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+        position: relative;
+    }
+
+    .header h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .header p {
+        opacity: 0.9;
+        font-size: 14px;
+    }
+
+    .backup-status {
+        position: absolute;
+        top: 30px;
+        right: 30px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .backup-status:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .tabs {
+        display: flex;
+        background: #f8f9fa;
+        border-bottom: 2px solid #e9ecef;
+        overflow-x: auto;
+    }
+
+    .tab {
+        padding: 15px 25px;
+        cursor: pointer;
+        border: none;
+        background: none;
+        font-size: 15px;
+        color: #6c757d;
+        transition: all 0.3s;
+        white-space: nowrap;
+        position: relative;
+    }
+
+    .tab:hover {
+        background: #e9ecef;
+        color: #495057;
+    }
+
+    .tab.active {
+        color: #667eea;
+        font-weight: bold;
+    }
+
+    .tab.active::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+    }
+
+    .tab-content {
+        display: none;
+        padding: 30px;
+        animation: fadeIn 0.3s;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        color: #333;
+        border-left: 4px solid #667eea;
+        padding-left: 12px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #495057;
+        font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 12px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #06C755 0%, #00B900 100%);
+        color: white;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    thead {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    th {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    td {
+        font-size: 14px;
+    }
+
+    tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-buttons button {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+    .empty-state-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .stat-card h3 {
+        font-size: 14px;
+        opacity: 0.9;
+        margin-bottom: 10px;
+    }
+
+    .stat-card .stat-value {
+        font-size: 36px;
+        font-weight: bold;
+    }
+
+    .share-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #06C755 0%, #00B900 100%);
+        color: white;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(6, 199, 85, 0.4);
+        transition: all 0.3s;
+        z-index: 1000;
+    }
+
+    .share-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(6, 199, 85, 0.6);
+    }
+
+    @media print {
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            background: white;
+            padding: 0;
         }
 
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
+            box-shadow: none;
+            border-radius: 0;
         }
 
-        .header {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 30px;
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .header-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .share-control {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .share-control label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-
-        .share-control input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            border-bottom: 2px solid #e5e7eb;
-            margin-top: 20px;
-        }
-
-        .tab {
-            padding: 12px 24px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            color: #666;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
-        }
-
-        .tab:hover {
-            color: #667eea;
-        }
-
-        .tab.active {
-            color: #667eea;
-            border-bottom-color: #667eea;
+        .header, .tabs, .btn-group, .share-button, .action-buttons {
+            display: none !important;
         }
 
         .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
+            display: block !important;
+            padding: 0;
         }
 
         .card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 30px;
-            margin-bottom: 20px;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .stat-label {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: bold;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #333;
-            font-size: 14px;
-        }
-
-        input, select {
-            padding: 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-            width: 100%;
-        }
-
-        .btn-primary:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-primary:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-secondary {
-            background: #10b981;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #059669;
-        }
-
-        .btn-import {
-            background: #f59e0b;
-            color: white;
-        }
-
-        .btn-import:hover {
-            background: #d97706;
-        }
-
-        .btn-danger {
-            background: #ef4444;
-            color: white;
-            padding: 8px 12px;
-            font-size: 14px;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
-        }
-
-        .import-section {
-            background: #fef3c7;
-            border: 2px dashed #f59e0b;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .import-section h3 {
-            color: #d97706;
-            margin-bottom: 10px;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .info-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .info-modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-
-        .info-modal h3 {
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .info-item {
-            padding: 10px;
-            margin: 8px 0;
-            background: #f3f4f6;
-            border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .modal-close {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 15px;
-            width: 100%;
+            box-shadow: none;
+            page-break-inside: avoid;
         }
 
         table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+            page-break-inside: auto;
         }
 
-        thead {
-            background: #f3f4f6;
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
         }
 
-        th {
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-            color: #333;
+        @page {
+            size: A4 landscape;
+            margin: 15mm;
+        }
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding: 0;
+        }
+
+        .container {
+            border-radius: 0;
+        }
+
+        .header {
+            padding: 20px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+        }
+
+        .backup-status {
+            position: static;
+            margin-top: 15px;
+            display: inline-block;
+        }
+
+        .tab {
+            padding: 12px 15px;
             font-size: 14px;
         }
 
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #e5e7eb;
-            font-size: 14px;
+        .tab-content {
+            padding: 15px;
         }
 
-        tbody tr:hover {
-            background: #f9fafb;
+        .form-grid {
+            grid-template-columns: 1fr;
         }
 
-        .text-center {
-            text-align: center;
+        .stats-grid {
+            grid-template-columns: 1fr;
         }
 
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            color: #999;
-        }
-
-        #summaryTable {
-            font-size: 13px;
-        }
-
-        #summaryTable th {
-            background: #f3f4f6;
+        table {
             font-size: 12px;
-            white-space: nowrap;
+        }
+
+        th, td {
             padding: 8px 4px;
         }
 
-        #summaryTable td {
-            text-align: center;
-            padding: 8px 4px;
-            white-space: nowrap;
+        .action-buttons {
+            flex-direction: column;
         }
 
-        #summaryTable tbody tr:nth-child(even) {
-            background: #f9fafb;
+        .share-button {
+            bottom: 10px;
+            right: 10px;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
         }
+    }
 
-        .header-with-button {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+    .filter-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
 
-        .vehicle-count {
-            color: #666;
-            font-size: 14px;
-        }
+    .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
 
-        @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats {
-                grid-template-columns: 1fr;
-            }
+    .summary-table {
+        margin-top: 30px;
+    }
 
-            table {
-                font-size: 12px;
-            }
+    .summary-table h3 {
+        font-size: 18px;
+        margin-bottom: 15px;
+        color: #333;
+    }
 
-            th, td {
-                padding: 8px;
-            }
+    .total-row {
+        font-weight: bold;
+        background: #e9ecef !important;
+    }
 
-            .tabs {
-                flex-wrap: wrap;
-            }
+    .intro-section {
+        padding: 40px;
+        text-align: center;
+    }
 
-            .tab {
-                font-size: 14px;
-                padding: 10px 16px;
-            }
+    .intro-section h2 {
+        font-size: 32px;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
 
-            .header-controls {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-    </style>
+    .intro-section p {
+        font-size: 16px;
+        color: #6c757d;
+        margin-bottom: 15px;
+        line-height: 1.8;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 40px;
+    }
+
+    .feature-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .feature-card-icon {
+        font-size: 48px;
+        margin-bottom: 15px;
+    }
+
+    .feature-card h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .feature-card p {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+</style>
+```
+
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="header-controls">
-                <div>
-                    <h1>🚚 車両管理・運搬管理システム</h1>
-                    <div class="share-control">
-                        <label>
-                            <input type="checkbox" id="shareMode" onchange="toggleShareMode()">
-                            <span style="font-size: 14px; font-weight: 600; color: #667eea;">🌐 データ共有モード</span>
-                        </label>
-                        <span id="shareModeStatus" style="font-size: 13px; color: #666; display: none;"></span>
-                    </div>
-                </div>
-                <div class="button-group">
-                    <button onclick="syncData()" class="btn-secondary">🔄 データ同期</button>
-                    <button onclick="showDataInfo()" class="btn-import">ℹ️ データ情報</button>
-                </div>
-            </div>
-            <div class="tabs">
-                <button class="tab active" onclick="switchTab('projects')">🏗️ 工事マスター</button>
-                <button class="tab" onclick="switchTab('vehicles')">🚛 車両マスター</button>
-                <button class="tab" onclick="switchTab('transport')">📋 運搬管理表</button>
-                <button class="tab" onclick="switchTab('summary')">📊 工事別集計表</button>
-                <button class="tab" onclick="switchTab('report')">📈 月次集計</button>
+            <h1>🚚 ダンプトラック運搬台数管理システム</h1>
+            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.0）</p>
+            <div class="backup-status" id="backupStatus" onclick="manualBackup()">
+                💾 バックアップ準備中...
             </div>
         </div>
 
-        <!-- 工事マスター -->
-        <div id="projects" class="tab-content active">
-            <div class="card">
-                <div class="import-section">
-                    <h3>📤 Excelファイルからインポート</h3>
-                    <p style="margin-bottom: 15px; color: #92400e;">
-                        工事マスターのExcelファイル（.xlsx, .csv）をアップロードしてください
-                    </p>
-                    <input type="file" id="projectFileInput" class="file-input" accept=".xlsx,.xls,.csv" onchange="handleProjectFileImport(event)">
-                    <button class="btn-import" onclick="document.getElementById('projectFileInput').click()">
-                        📁 ファイルを選択
-                    </button>
+```
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('home')">🏠 ホーム</button>
+        <button class="tab" onclick="switchTab('projects')">🏗️ 工事マスター</button>
+        <button class="tab" onclick="switchTab('vehicles')">🚚 車両マスター</button>
+        <button class="tab" onclick="switchTab('records')">📝 運搬記録</button>
+        <button class="tab" onclick="switchTab('summary')">📊 集計・印刷</button>
+    </div>
+
+    <!-- ホームタブ -->
+    <div id="home" class="tab-content active">
+        <div class="intro-section">
+            <h2>ダンプトラック運搬台数管理システム</h2>
+            <p>建設現場でのダンプトラックの運搬台数を効率的に管理できるシステムです。</p>
+            <p>工事・車両のマスター管理、日々の運搬記録、工事別・車両別の集計機能を備えています。</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-card-icon">🏗️</div>
+                    <h3>工事マスター</h3>
+                    <p>工事名、工事箇所、請負者を登録・管理</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card-icon">🚚</div>
+                    <h3>車両マスター</h3>
+                    <p>車種、車番、荷台寸法、容量を登録・管理</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card-icon">📝</div>
+                    <h3>運搬記録</h3>
+                    <p>日付・工事・車両ごとの運搬台数を記録</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card-icon">📊</div>
+                    <h3>集計・印刷</h3>
+                    <p>工事別・車両別に集計して印刷・Excel出力</p>
                 </div>
             </div>
 
-            <div class="card">
-                <h2>工事登録</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>工事名</label>
-                        <input type="text" id="projectName" placeholder="例: ○○道路改良工事">
-                    </div>
-                    <div class="form-group">
-                        <label>発注者</label>
-                        <input type="text" id="projectClient" placeholder="例: 福井県">
-                    </div>
-                    <div class="form-group">
-                        <label>地係</label>
-                        <input type="text" id="projectLocation" placeholder="例: 福井市○○町">
-                    </div>
-                </div>
-                <button class="btn-primary" onclick="addProject()">➕ 工事を登録</button>
-            </div>
-
-            <div class="card">
-                <div class="header-with-button">
-                    <h2>工事一覧</h2>
-                    <div class="button-group">
-                        <button class="btn-secondary" onclick="exportProjectsCSV()">📥 CSV出力</button>
-                        <button class="btn-danger" onclick="clearAllProjects()">🗑️ 全削除</button>
-                    </div>
-                </div>
-                <div style="overflow-x: auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>工事名</th>
-                                <th>発注者</th>
-                                <th>地係</th>
-                                <th class="text-center">運搬記録</th>
-                                <th class="text-center">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="projectTableBody">
-                            <tr><td colspan="5" class="no-data">まだ工事が登録されていません</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- 車両マスター -->
-        <div id="vehicles" class="tab-content">
-            <div class="card">
-                <div class="import-section">
-                    <h3>📤 Excelファイルからインポート</h3>
-                    <p style="margin-bottom: 15px; color: #92400e;">
-                        車両マスターのExcelファイル（.xlsx, .csv）をアップロードしてください
-                    </p>
-                    <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls,.csv" onchange="handleFileImport(event)">
-                    <button class="btn-import" onclick="document.getElementById('fileInput').click()">
-                        📁 ファイルを選択
-                    </button>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>車両登録 <span class="vehicle-count" id="vehicleCount">(0/30台)</span></h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>車番</label>
-                        <input type="text" id="vehicleNumber" placeholder="例: 福井 100 あ 1234">
-                    </div>
-                    <div class="form-group">
-                        <label>荷台長さ(m)</label>
-                        <input type="number" step="0.1" id="vehicleLength" placeholder="例: 3.5">
-                    </div>
-                    <div class="form-group">
-                        <label>荷台幅(m)</label>
-                        <input type="number" step="0.1" id="vehicleWidth" placeholder="例: 1.7">
-                    </div>
-                    <div class="form-group">
-                        <label>荷台高さ(m)</label>
-                        <input type="number" step="0.1" id="vehicleHeight" placeholder="例: 0.5">
-                    </div>
-                </div>
-                <button class="btn-primary" id="addVehicleBtn" onclick="addVehicle()">➕ 車両を登録</button>
-            </div>
-
-            <div class="card">
-                <div class="header-with-button">
-                    <h2>車両一覧</h2>
-                    <div class="button-group">
-                        <button class="btn-secondary" onclick="exportVehiclesCSV()">📥 CSV出力</button>
-                        <button class="btn-danger" onclick="clearAllVehicles()">🗑️ 全削除</button>
-                    </div>
-                </div>
-                <div style="overflow-x: auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>車番</th>
-                                <th class="text-center">長さ(m)</th>
-                                <th class="text-center">幅(m)</th>
-                                <th class="text-center">高さ(m)</th>
-                                <th class="text-center">荷台容量(m³)</th>
-                                <th class="text-center">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="vehicleTableBody">
-                            <tr><td colspan="6" class="no-data">まだ車両が登録されていません</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- 運搬管理表 -->
-        <div id="transport" class="tab-content">
-            <div class="card">
-                <div class="header-with-button">
-                    <h2>工事選択</h2>
-                </div>
-                <div class="form-group">
-                    <label>表示する工事</label>
-                    <select id="selectedProject" onchange="updateTransportView()" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
-                        <option value="">工事を選択してください</option>
-                    </select>
-                </div>
-            </div>
-
-            <div id="transportContent" style="display: none;">
-            <div class="stats">
+            <div class="stats-grid" style="margin-top: 40px;">
                 <div class="stat-card">
-                    <div class="stat-label">本工事の総運搬量</div>
-                    <div class="stat-value" id="projectTotal">0.00 m³</div>
+                    <h3>登録工事数</h3>
+                    <div class="stat-value" id="projectCount">0</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">総台数</div>
-                    <div class="stat-value" id="projectCount">0 台</div>
+                    <h3>登録車両数</h3>
+                    <div class="stat-value" id="vehicleCount">0</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">記録日数</div>
-                    <div class="stat-value" id="projectDays">0 日</div>
+                    <h3>記録件数</h3>
+                    <div class="stat-value" id="recordCount">0</div>
                 </div>
-            </div>
-
-            <div class="card">
-                <h2>運搬記録入力</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>日付</label>
-                        <input type="date" id="transportDate">
-                    </div>
-                    <div class="form-group">
-                        <label>車番</label>
-                        <select id="transportVehicle">
-                            <option value="">選択してください</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>運転者名</label>
-                        <input type="text" id="transportDriver" placeholder="例: 山田 太郎">
-                    </div>
-                    <div class="form-group">
-                        <label>台数</label>
-                        <input type="number" id="transportCount" min="1" placeholder="例: 5">
-                    </div>
+                <div class="stat-card">
+                    <h3>総運搬台数</h3>
+                    <div class="stat-value" id="totalCount">0</div>
                 </div>
-                <button class="btn-primary" onclick="addTransportRecord()">➕ 記録を追加</button>
-            </div>
-
-            <div class="card">
-                <div class="header-with-button">
-                    <h2>運搬記録</h2>
-                    <button class="btn-secondary" onclick="exportTransportCSV()">📥 CSV出力</button>
-                </div>
-                <div style="overflow-x: auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>日付</th>
-                                <th>車番</th>
-                                <th>運転者</th>
-                                <th class="text-center">容量(m³)</th>
-                                <th class="text-center">台数</th>
-                                <th class="text-center">合計(m³)</th>
-                                <th class="text-center">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transportTableBody">
-                            <tr><td colspan="7" class="no-data">まだ記録がありません</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            </div>
-        </div>
-
-        <!-- 工事別集計表 -->
-        <div id="summary" class="tab-content">
-            <div class="card">
-                <h2>工事別運搬集計表</h2>
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label>集計する工事</label>
-                    <select id="summaryProject" onchange="updateSummaryTable()" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
-                        <option value="">工事を選択してください</option>
-                    </select>
-                </div>
-            </div>
-
-            <div id="summaryContent" style="display: none;">
-                <div class="card">
-                    <div class="header-with-button">
-                        <div>
-                            <h2 id="summaryProjectName">工事名</h2>
-                            <p style="color: #666; margin-top: 5px;">
-                                <span id="summaryProjectClient">発注者</span> / <span id="summaryProjectLocation">地係</span>
-                            </p>
-                        </div>
-                        <button class="btn-secondary" onclick="exportSummaryCSV()">📥 CSV出力</button>
-                    </div>
-                    
-                    <div style="overflow-x: auto; margin-top: 20px;">
-                        <table id="summaryTable">
-                            <thead>
-                                <tr>
-                                    <th rowspan="2" style="vertical-align: middle;">日付</th>
-                                    <th colspan="20" style="text-align: center; background: #f3f4f6;">車両別運搬回数</th>
-                                    <th rowspan="2" style="vertical-align: middle; background: #dbeafe;">合計台数</th>
-                                    <th rowspan="2" style="vertical-align: middle; background: #dbeafe;">合計(m³)</th>
-                                </tr>
-                                <tr id="vehicleHeaders">
-                                </tr>
-                            </thead>
-                            <tbody id="summaryTableBody">
-                                <tr><td colspan="22" class="no-data">工事を選択してください</td></tr>
-                            </tbody>
-                            <tfoot>
-                                <tr style="background: #f3f4f6; font-weight: bold;">
-                                    <td>合計</td>
-                                    <td colspan="20" id="vehicleTotals" style="text-align: center;"></td>
-                                    <td id="totalCount" style="text-align: center; background: #dbeafe;">0</td>
-                                    <td id="totalVolume" style="text-align: center; background: #dbeafe;">0.00</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 月次集計 -->
-        <div id="report" class="tab-content">
-            <div class="card">
-                <h2>工事別・月次集計</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>工事名</th>
-                            <th>年月</th>
-                            <th class="text-center">台数</th>
-                            <th class="text-center">合計(m³)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="reportTableBody">
-                        <tr><td colspan="4" class="no-data">集計データがありません</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- データ情報モーダル -->
-        <div id="infoModal" class="info-modal">
-            <div class="info-modal-content">
-                <h3>📊 データ情報</h3>
-                <div class="info-item">
-                    <span>登録工事数:</span>
-                    <strong id="infoProjects">0</strong>
-                </div>
-                <div class="info-item">
-                    <span>登録車両数:</span>
-                    <strong id="infoVehicles">0</strong>
-                </div>
-                <div class="info-item">
-                    <span>運搬記録数:</span>
-                    <strong id="infoRecords">0</strong>
-                </div>
-                <div class="info-item">
-                    <span>データモード:</span>
-                    <strong id="infoMode">個人データ</strong>
-                </div>
-                <div class="info-item">
-                    <span>最終更新:</span>
-                    <strong id="infoLastUpdate">-</strong>
-                </div>
-                <button class="modal-close" onclick="closeDataInfo()">閉じる</button>
             </div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script>
-        let vehicles = [];
-        let transportRecords = [];
-        let projects = [];
-        let currentProject = null;
-        let shareMode = false;
-        let lastSyncTime = null;
+    <!-- 工事マスタータブ -->
+    <div id="projects" class="tab-content">
+        <div class="card">
+            <h2>🏗️ 工事登録</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>工事名 *</label>
+                    <input type="text" id="projectName" placeholder="例：○○建設工事">
+                </div>
+                <div class="form-group">
+                    <label>工事箇所</label>
+                    <input type="text" id="projectLocation" placeholder="例：○○市△△町">
+                </div>
+                <div class="form-group">
+                    <label>請負者名称</label>
+                    <input type="text" id="projectContractor" placeholder="例：株式会社○○">
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addProject()">➕ 工事を追加</button>
+                <button class="btn btn-secondary" onclick="clearProjectForm()">🔄 クリア</button>
+            </div>
+        </div>
 
-        function init() {
+        <div class="card">
+            <h2>📋 登録済み工事一覧</h2>
+            <div id="projectList"></div>
+        </div>
+    </div>
+
+    <!-- 車両マスタータブ -->
+    <div id="vehicles" class="tab-content">
+        <div class="card">
+            <h2>🚚 車両登録</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>車種 *</label>
+                    <input type="text" id="vehicleType" placeholder="例：10tダンプ">
+                </div>
+                <div class="form-group">
+                    <label>車番 *</label>
+                    <input type="text" id="vehicleNumber" placeholder="例：品川500あ1234">
+                </div>
+                <div class="form-group">
+                    <label>荷台寸法</label>
+                    <input type="text" id="vehicleBodySize" placeholder="例：長5.2m×幅2.3m×高0.6m">
+                </div>
+                <div class="form-group">
+                    <label>容量（m³）</label>
+                    <input type="number" id="vehicleCapacity" step="0.1" placeholder="例：7.2">
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addVehicle()">➕ 車両を追加</button>
+                <button class="btn btn-secondary" onclick="clearVehicleForm()">🔄 クリア</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📋 登録済み車両一覧</h2>
+            <div id="vehicleList"></div>
+        </div>
+    </div>
+
+    <!-- 運搬記録タブ -->
+    <div id="records" class="tab-content">
+        <div class="card">
+            <h2>📝 運搬記録入力</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>日付 *</label>
+                    <input type="date" id="recordDate">
+                </div>
+                <div class="form-group">
+                    <label>工事 *</label>
+                    <select id="recordProject">
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>車両 *</label>
+                    <select id="recordVehicle">
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>運搬台数 *</label>
+                    <input type="number" id="recordCount" min="1" placeholder="例：15">
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addRecord()">➕ 記録を追加</button>
+                <button class="btn btn-secondary" onclick="clearRecordForm()">🔄 クリア</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📋 運搬記録一覧</h2>
+            <div id="recordList"></div>
+        </div>
+    </div>
+
+    <!-- 集計・印刷タブ -->
+    <div id="summary" class="tab-content">
+        <div class="card">
+            <h2>📊 集計条件設定</h2>
+            <div class="filter-section">
+                <div class="filter-grid">
+                    <div class="form-group">
+                        <label>開始日</label>
+                        <input type="date" id="summaryStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label>終了日</label>
+                        <input type="date" id="summaryEndDate">
+                    </div>
+                    <div class="form-group">
+                        <label>工事</label>
+                        <select id="summaryProject">
+                            <option value="">すべて</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>車両</label>
+                        <select id="summaryVehicle">
+                            <option value="">すべて</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="generateSummary()">📊 集計実行</button>
+                <button class="btn btn-success" onclick="exportSummaryToExcel()">📄 Excel出力</button>
+                <button class="btn btn-secondary" onclick="window.print()">🖨️ 印刷</button>
+            </div>
+        </div>
+
+        <div class="card" id="summaryResults" style="display: none;">
+            <h2>📈 集計結果</h2>
+            <div id="summaryContent"></div>
+        </div>
+    </div>
+</div>
+
+<button class="share-button" onclick="shareData()" title="データを共有">📤</button>
+
+<script>
+    // データ構造
+    let projects = [];
+    let vehicles = [];
+    let records = [];
+    let editingProjectId = null;
+    let editingVehicleId = null;
+    let editingRecordId = null;
+
+    // 初期化
+    document.addEventListener('DOMContentLoaded', () => {
+        loadData();
+        updateAllSelects();
+        updateStats();
+        initAutoBackup();
+        registerServiceWorker();
+        
+        // 今日の日付をセット
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('recordDate').value = today;
+        document.getElementById('summaryEndDate').value = today;
+        
+        // 30日前の日付をセット
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        document.getElementById('summaryStartDate').value = thirtyDaysAgo.toISOString().split('T')[0];
+    });
+
+    // Service Worker登録
+    function registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(() => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed:', err));
+        }
+    }
+
+    // タブ切り替え
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        event.target.classList.add('active');
+        document.getElementById(tabName).classList.add('active');
+        
+        if (tabName === 'home') {
+            updateStats();
+        }
+    }
+
+    // データ保存
+    function saveData() {
+        localStorage.setItem('dumpTruckProjects', JSON.stringify(projects));
+        localStorage.setItem('dumpTruckVehicles', JSON.stringify(vehicles));
+        localStorage.setItem('dumpTruckRecords', JSON.stringify(records));
+    }
+
+    // データ読み込み
+    function loadData() {
+        projects = JSON.parse(localStorage.getItem('dumpTruckProjects')) || [];
+        vehicles = JSON.parse(localStorage.getItem('dumpTruckVehicles')) || [];
+        records = JSON.parse(localStorage.getItem('dumpTruckRecords')) || [];
+        
+        renderProjectList();
+        renderVehicleList();
+        renderRecordList();
+    }
+
+    // 工事追加・更新
+    function addProject() {
+        const name = document.getElementById('projectName').value.trim();
+        const location = document.getElementById('projectLocation').value.trim();
+        const contractor = document.getElementById('projectContractor').value.trim();
+        
+        if (!name) {
+            alert('❌ 工事名は必須です。');
+            return;
+        }
+        
+        if (editingProjectId) {
+            const project = projects.find(p => p.id === editingProjectId);
+            project.name = name;
+            project.location = location;
+            project.contractor = contractor;
+            editingProjectId = null;
+        } else {
+            projects.push({
+                id: Date.now().toString(),
+                name,
+                location,
+                contractor
+            });
+        }
+        
+        saveData();
+        renderProjectList();
+        updateAllSelects();
+        clearProjectForm();
+        alert('✅ 工事を保存しました！');
+    }
+
+    // 工事編集
+    function editProject(id) {
+        const project = projects.find(p => p.id === id);
+        document.getElementById('projectName').value = project.name;
+        document.getElementById('projectLocation').value = project.location;
+        document.getElementById('projectContractor').value = project.contractor;
+        editingProjectId = id;
+        
+        document.querySelector('.tab[onclick*="projects"]').click();
+        window.scrollTo(0, 0);
+    }
+
+    // 工事削除
+    function deleteProject(id) {
+        if (!confirm('この工事を削除しますか？\n関連する運搬記録も削除されます。')) return;
+        
+        projects = projects.filter(p => p.id !== id);
+        records = records.filter(r => r.projectId !== id);
+        saveData();
+        renderProjectList();
+        renderRecordList();
+        updateAllSelects();
+        updateStats();
+    }
+
+    // 工事リスト表示
+    function renderProjectList() {
+        const container = document.getElementById('projectList');
+        
+        if (projects.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">🏗️</div>
+                    <p>まだ工事が登録されていません。</p>
+                    <p>上のフォームから工事を登録してください。</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '<table><thead><tr><th>工事名</th><th>工事箇所</th><th>請負者</th><th>操作</th></tr></thead><tbody>';
+        
+        projects.forEach(project => {
+            html += `
+                <tr>
+                    <td><strong>${project.name}</strong></td>
+                    <td>${project.location || '-'}</td>
+                    <td>${project.contractor || '-'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary" onclick="editProject('${project.id}')">✏️ 編集</button>
+                            <button class="btn btn-danger" onclick="deleteProject('${project.id}')">🗑️ 削除</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    // 車両追加・更新
+    function addVehicle() {
+        const type = document.getElementById('vehicleType').value.trim();
+        const number = document.getElementById('vehicleNumber').value.trim();
+        const bodySize = document.getElementById('vehicleBodySize').value.trim();
+        const capacity = document.getElementById('vehicleCapacity').value;
+        
+        if (!type || !number) {
+            alert('❌ 車種と車番は必須です。');
+            return;
+        }
+        
+        if (editingVehicleId) {
+            const vehicle = vehicles.find(v => v.id === editingVehicleId);
+            vehicle.type = type;
+            vehicle.number = number;
+            vehicle.bodySize = bodySize;
+            vehicle.capacity = capacity;
+            editingVehicleId = null;
+        } else {
+            vehicles.push({
+                id: Date.now().toString(),
+                type,
+                number,
+                bodySize,
+                capacity: capacity ? parseFloat(capacity) : null
+            });
+        }
+        
+        saveData();
+        renderVehicleList();
+        updateAllSelects();
+        clearVehicleForm();
+        alert('✅ 車両を保存しました！');
+    }
+
+    // 車両編集
+    function editVehicle(id) {
+        const vehicle = vehicles.find(v => v.id === id);
+        document.getElementById('vehicleType').value = vehicle.type;
+        document.getElementById('vehicleNumber').value = vehicle.number;
+        document.getElementById('vehicleBodySize').value = vehicle.bodySize || '';
+        document.getElementById('vehicleCapacity').value = vehicle.capacity || '';
+        editingVehicleId = id;
+        
+        document.querySelector('.tab[onclick*="vehicles"]').click();
+        window.scrollTo(0, 0);
+    }
+
+    // 車両削除
+    function deleteVehicle(id) {
+        if (!confirm('この車両を削除しますか？\n関連する運搬記録も削除されます。')) return;
+        
+        vehicles = vehicles.filter(v => v.id !== id);
+        records = records.filter(r => r.vehicleId !== id);
+        saveData();
+        renderVehicleList();
+        renderRecordList();
+        updateAllSelects();
+        updateStats();
+    }
+
+    // 車両リスト表示
+    function renderVehicleList() {
+        const container = document.getElementById('vehicleList');
+        
+        if (vehicles.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">🚚</div>
+                    <p>まだ車両が登録されていません。</p>
+                    <p>上のフォームから車両を登録してください。</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '<table><thead><tr><th>車種</th><th>車番</th><th>荷台寸法</th><th>容量</th><th>操作</th></tr></thead><tbody>';
+        
+        vehicles.forEach(vehicle => {
+            html += `
+                <tr>
+                    <td><strong>${vehicle.type}</strong></td>
+                    <td>${vehicle.number}</td>
+                    <td>${vehicle.bodySize || '-'}</td>
+                    <td>${vehicle.capacity ? vehicle.capacity + 'm³' : '-'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary" onclick="editVehicle('${vehicle.id}')">✏️ 編集</button>
+                            <button class="btn btn-danger" onclick="deleteVehicle('${vehicle.id}')">🗑️ 削除</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    // 運搬記録追加・更新
+    function addRecord() {
+        const date = document.getElementById('recordDate').value;
+        const projectId = document.getElementById('recordProject').value;
+        const vehicleId = document.getElementById('recordVehicle').value;
+        const count = parseInt(document.getElementById('recordCount').value);
+        
+        if (!date || !projectId || !vehicleId || !count || count < 1) {
+            alert('❌ すべての項目を正しく入力してください。');
+            return;
+        }
+        
+        if (editingRecordId) {
+            const record = records.find(r => r.id === editingRecordId);
+            record.date = date;
+            record.projectId = projectId;
+            record.vehicleId = vehicleId;
+            record.count = count;
+            editingRecordId = null;
+        } else {
+            records.push({
+                id: Date.now().toString(),
+                date,
+                projectId,
+                vehicleId,
+                count
+            });
+        }
+        
+        saveData();
+        renderRecordList();
+        clearRecordForm();
+        updateStats();
+        alert('✅ 運搬記録を保存しました！');
+    }
+
+    // 運搬記録編集
+    function editRecord(id) {
+        const record = records.find(r => r.id === id);
+        document.getElementById('recordDate').value = record.date;
+        document.getElementById('recordProject').value = record.projectId;
+        document.getElementById('recordVehicle').value = record.vehicleId;
+        document.getElementById('recordCount').value = record.count;
+        editingRecordId = id;
+        
+        document.querySelector('.tab[onclick*="records"]').click();
+        window.scrollTo(0, 0);
+    }
+
+    // 運搬記録削除
+    function deleteRecord(id) {
+        if (!confirm('この運搬記録を削除しますか？')) return;
+        
+        records = records.filter(r => r.id !== id);
+        saveData();
+        renderRecordList();
+        updateStats();
+    }
+
+    // 運搬記録リスト表示
+    function renderRecordList() {
+        const container = document.getElementById('recordList');
+        
+        if (records.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📝</div>
+                    <p>まだ運搬記録がありません。</p>
+                    <p>上のフォームから運搬記録を入力してください。</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // 日付降順でソート
+        const sortedRecords = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        let html = '<table><thead><tr><th>日付</th><th>工事</th><th>車両</th><th>車番</th><th>運搬台数</th><th>操作</th></tr></thead><tbody>';
+        
+        sortedRecords.forEach(record => {
+            const project = projects.find(p => p.id === record.projectId);
+            const vehicle = vehicles.find(v => v.id === record.vehicleId);
+            
+            html += `
+                <tr>
+                    <td>${record.date}</td>
+                    <td>${project ? project.name : '（削除済み）'}</td>
+                    <td>${vehicle ? vehicle.type : '（削除済み）'}</td>
+                    <td>${vehicle ? vehicle.number : '-'}</td>
+                    <td><strong>${record.count}台</strong></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary" onclick="editRecord('${record.id}')">✏️ 編集</button>
+                            <button class="btn btn-danger" onclick="deleteRecord('${record.id}')">🗑️ 削除</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    // セレクトボックス更新
+    function updateAllSelects() {
+        // 運搬記録の工事選択
+        const recordProject = document.getElementById('recordProject');
+        recordProject.innerHTML = '<option value="">選択してください</option>';
+        projects.forEach(project => {
+            recordProject.innerHTML += `<option value="${project.id}">${project.name}</option>`;
+        });
+        
+        // 運搬記録の車両選択
+        const recordVehicle = document.getElementById('recordVehicle');
+        recordVehicle.innerHTML = '<option value="">選択してください</option>';
+        vehicles.forEach(vehicle => {
+            recordVehicle.innerHTML += `<option value="${vehicle.id}">${vehicle.type} (${vehicle.number})</option>`;
+        });
+        
+        // 集計の工事選択
+        const summaryProject = document.getElementById('summaryProject');
+        summaryProject.innerHTML = '<option value="">すべて</option>';
+        projects.forEach(project => {
+            summaryProject.innerHTML += `<option value="${project.id}">${project.name}</option>`;
+        });
+        
+        // 集計の車両選択
+        const summaryVehicle = document.getElementById('summaryVehicle');
+        summaryVehicle.innerHTML = '<option value="">すべて</option>';
+        vehicles.forEach(vehicle => {
+            summaryVehicle.innerHTML += `<option value="${vehicle.id}">${vehicle.type} (${vehicle.number})</option>`;
+        });
+    }
+
+    // 統計更新
+    function updateStats() {
+        document.getElementById('projectCount').textContent = projects.length;
+        document.getElementById('vehicleCount').textContent = vehicles.length;
+        document.getElementById('recordCount').textContent = records.length;
+        
+        const totalCount = records.reduce((sum, record) => sum + record.count, 0);
+        document.getElementById('totalCount').textContent = totalCount;
+    }
+
+    // フォームクリア
+    function clearProjectForm() {
+        document.getElementById('projectName').value = '';
+        document.getElementById('projectLocation').value = '';
+        document.getElementById('projectContractor').value = '';
+        editingProjectId = null;
+    }
+
+    function clearVehicleForm() {
+        document.getElementById('vehicleType').value = '';
+        document.getElementById('vehicleNumber').value = '';
+        document.getElementById('vehicleBodySize').value = '';
+        document.getElementById('vehicleCapacity').value = '';
+        editingVehicleId = null;
+    }
+
+    function clearRecordForm() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('recordDate').value = today;
+        document.getElementById('recordProject').value = '';
+        document.getElementById('recordVehicle').value = '';
+        document.getElementById('recordCount').value = '';
+        editingRecordId = null;
+    }
+
+    // 集計実行
+    function generateSummary() {
+        const startDate = document.getElementById('summaryStartDate').value;
+        const endDate = document.getElementById('summaryEndDate').value;
+        const projectId = document.getElementById('summaryProject').value;
+        const vehicleId = document.getElementById('summaryVehicle').value;
+        
+        if (!startDate || !endDate) {
+            alert('❌ 開始日と終了日を入力してください。');
+            return;
+        }
+        
+        // フィルター
+        let filteredRecords = records.filter(record => {
+            if (record.date < startDate || record.date > endDate) return false;
+            if (projectId && record.projectId !== projectId) return false;
+            if (vehicleId && record.vehicleId !== vehicleId) return false;
+            return true;
+        });
+        
+        if (filteredRecords.length === 0) {
+            alert('⚠️ 該当する記録がありません。');
+            return;
+        }
+        
+        // 工事別集計
+        const projectSummary = {};
+        filteredRecords.forEach(record => {
+            if (!projectSummary[record.projectId]) {
+                projectSummary[record.projectId] = 0;
+            }
+            projectSummary[record.projectId] += record.count;
+        });
+        
+        // 車両別集計
+        const vehicleSummary = {};
+        filteredRecords.forEach(record => {
+            if (!vehicleSummary[record.vehicleId]) {
+                vehicleSummary[record.vehicleId] = 0;
+            }
+            vehicleSummary[record.vehicleId] += record.count;
+        });
+        
+        // 日付別集計
+        const dateSummary = {};
+        filteredRecords.forEach(record => {
+            if (!dateSummary[record.date]) {
+                dateSummary[record.date] = 0;
+            }
+            dateSummary[record.date] += record.count;
+        });
+        
+        // 表示
+        let html = `
+            <div class="summary-table">
+                <h3>📊 工事別集計</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>工事名</th>
+                            <th>工事箇所</th>
+                            <th>運搬台数</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        
+        let projectTotal = 0;
+        Object.keys(projectSummary).forEach(pId => {
+            const project = projects.find(p => p.id === pId);
+            if (project) {
+                html += `
+                    <tr>
+                        <td>${project.name}</td>
+                        <td>${project.location || '-'}</td>
+                        <td><strong>${projectSummary[pId]}台</strong></td>
+                    </tr>
+                `;
+                projectTotal += projectSummary[pId];
+            }
+        });
+        
+        html += `
+                    <tr class="total-row">
+                        <td colspan="2">合計</td>
+                        <td><strong>${projectTotal}台</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="summary-table">
+            <h3>🚚 車両別集計</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>車種</th>
+                        <th>車番</th>
+                        <th>容量</th>
+                        <th>運搬台数</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        
+        let vehicleTotal = 0;
+        Object.keys(vehicleSummary).forEach(vId => {
+            const vehicle = vehicles.find(v => v.id === vId);
+            if (vehicle) {
+                html += `
+                    <tr>
+                        <td>${vehicle.type}</td>
+                        <td>${vehicle.number}</td>
+                        <td>${vehicle.capacity ? vehicle.capacity + 'm³' : '-'}</td>
+                        <td><strong>${vehicleSummary[vId]}台</strong></td>
+                    </tr>
+                `;
+                vehicleTotal += vehicleSummary[vId];
+            }
+        });
+        
+        html += `
+                    <tr class="total-row">
+                        <td colspan="3">合計</td>
+                        <td><strong>${vehicleTotal}台</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="summary-table">
+            <h3>📅 日付別集計</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>日付</th>
+                        <th>運搬台数</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        
+        const sortedDates = Object.keys(dateSummary).sort();
+        let dateTotal = 0;
+        sortedDates.forEach(date => {
+            html += `
+                <tr>
+                    <td>${date}</td>
+                    <td><strong>${dateSummary[date]}台</strong></td>
+                </tr>
+            `;
+            dateTotal += dateSummary[date];
+        });
+        
+        html += `
+                    <tr class="total-row">
+                        <td>合計</td>
+                        <td><strong>${dateTotal}台</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        `;
+        
+        document.getElementById('summaryContent').innerHTML = html;
+        document.getElementById('summaryResults').style.display = 'block';
+    }
+
+    // Excel出力
+    function exportSummaryToExcel() {
+        const startDate = document.getElementById('summaryStartDate').value;
+        const endDate = document.getElementById('summaryEndDate').value;
+        const projectId = document.getElementById('summaryProject').value;
+        const vehicleId = document.getElementById('summaryVehicle').value;
+        
+        if (!startDate || !endDate) {
+            alert('❌ 開始日と終了日を入力してください。');
+            return;
+        }
+        
+        // フィルター
+        let filteredRecords = records.filter(record => {
+            if (record.date < startDate || record.date > endDate) return false;
+            if (projectId && record.projectId !== projectId) return false;
+            if (vehicleId && record.vehicleId !== vehicleId) return false;
+            return true;
+        });
+        
+        if (filteredRecords.length === 0) {
+            alert('⚠️ 該当する記録がありません。');
+            return;
+        }
+        
+        const workbook = XLSX.utils.book_new();
+        
+        // 工事別集計シート
+        const projectData = [
+            ['工事別運搬台数集計'],
+            ['期間', `${startDate} 〜 ${endDate}`],
+            [],
+            ['工事名', '工事箇所', '請負者', '運搬台数']
+        ];
+        
+        const projectSummary = {};
+        filteredRecords.forEach(record => {
+            if (!projectSummary[record.projectId]) {
+                projectSummary[record.projectId] = 0;
+            }
+            projectSummary[record.projectId] += record.count;
+        });
+        
+        let projectTotal = 0;
+        Object.keys(projectSummary).forEach(pId => {
+            const project = projects.find(p => p.id === pId);
+            if (project) {
+                projectData.push([
+                    project.name,
+                    project.location || '',
+                    project.contractor || '',
+                    projectSummary[pId]
+                ]);
+                projectTotal += projectSummary[pId];
+            }
+        });
+        
+        projectData.push(['', '', '合計', projectTotal]);
+        
+        const projectSheet = XLSX.utils.aoa_to_sheet(projectData);
+        projectSheet['!cols'] = [
+            { wch: 30 },
+            { wch: 25 },
+            { wch: 25 },
+            { wch: 12 }
+        ];
+        XLSX.utils.book_append_sheet(workbook, projectSheet, '工事別集計');
+        
+        // 車両別集計シート
+        const vehicleData = [
+            ['車両別運搬台数集計'],
+            ['期間', `${startDate} 〜 ${endDate}`],
+            [],
+            ['車種', '車番', '荷台寸法', '容量', '運搬台数']
+        ];
+        
+        const vehicleSummary = {};
+        filteredRecords.forEach(record => {
+            if (!vehicleSummary[record.vehicleId]) {
+                vehicleSummary[record.vehicleId] = 0;
+            }
+            vehicleSummary[record.vehicleId] += record.count;
+        });
+        
+        let vehicleTotal = 0;
+        Object.keys(vehicleSummary).forEach(vId => {
+            const vehicle = vehicles.find(v => v.id === vId);
+            if (vehicle) {
+                vehicleData.push([
+                    vehicle.type,
+                    vehicle.number,
+                    vehicle.bodySize || '',
+                    vehicle.capacity ? vehicle.capacity + 'm³' : '',
+                    vehicleSummary[vId]
+                ]);
+                vehicleTotal += vehicleSummary[vId];
+            }
+        });
+        
+        vehicleData.push(['', '', '', '合計', vehicleTotal]);
+        
+        const vehicleSheet = XLSX.utils.aoa_to_sheet(vehicleData);
+        vehicleSheet['!cols'] = [
+            { wch: 15 },
+            { wch: 20 },
+            { wch: 25 },
+            { wch: 10 },
+            { wch: 12 }
+        ];
+        XLSX.utils.book_append_sheet(workbook, vehicleSheet, '車両別集計');
+        
+        // ファイル出力
+        const fileName = `運搬台数集計_${startDate}_${endDate}.xlsx`;
+        XLSX.writeFile(workbook, fileName);
+        
+        alert('✅ Excelファイルをダウンロードしました！');
+    }
+
+    // データ共有
+    async function shareData() {
+        const data = {
+            projects,
+            vehicles,
+            records,
+            exportDate: new Date().toISOString()
+        };
+        
+        const jsonString = JSON.stringify(data, null, 2);
+        const dateStr = new Date().toISOString().split('T')[0];
+        
+        // 共有方法選択
+        const choice = await showShareOptions();
+        
+        if (choice === 'cancel') return;
+        
+        let fileName, mimeType;
+        
+        if (choice === 'txt') {
+            fileName = `dump-truck-data-${dateStr}.txt`;
+            mimeType = 'text/plain;charset=utf-8';
+        } else if (choice === 'text-only') {
+            await shareAsText(jsonString);
+            return;
+        } else {
+            fileName = `dump-truck-data-${dateStr}.json`;
+            mimeType = 'application/json;charset=utf-8';
+        }
+        
+        // Web Share API
+        if (navigator.share) {
+            try {
+                const blob = new Blob([jsonString], { type: mimeType });
+                const file = new File([blob], fileName, { type: mimeType });
+                
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        title: 'ダンプトラック運搬台数管理データ',
+                        text: `運搬台数管理データ（${projects.length}件の工事、${vehicles.length}台の車両、${records.length}件の記録）`,
+                        files: [file]
+                    });
+                    
+                    alert('✅ データを共有しました！');
+                    localStorage.setItem('lastBackupTime', new Date().toISOString());
+                    updateBackupStatus('success', '共有完了');
+                    return;
+                }
+            } catch (error) {
+                if (error.name === 'AbortError') return;
+                console.log('Web Share API エラー:', error);
+            }
+        }
+        
+        // ダウンロード方式
+        try {
+            const blob = new Blob([jsonString], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.style.display = 'none';
+            
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+            
+            alert('✅ ファイルをダウンロードしました！\n\nファイル名: ' + fileName);
+            localStorage.setItem('lastBackupTime', new Date().toISOString());
+            updateBackupStatus('success', 'バックアップ完了');
+        } catch (error) {
+            console.error('Download error:', error);
+            showJsonDialog(jsonString, fileName);
+        }
+    }
+
+    // 共有方法選択ダイアログ
+    function showShareOptions() {
+        return new Promise((resolve) => {
+            const dialog = document.createElement('div');
+            dialog.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.8);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            `;
+            
+            const content = document.createElement('div');
+            content.style.cssText = `
+                background: white;
+                border-radius: 15px;
+                padding: 25px;
+                max-width: 400px;
+                width: 100%;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            `;
+            
+            content.innerHTML = `
+                <h3 style="margin-top: 0; color: #333; font-size: 20px;">📤 共有方法を選択</h3>
+                <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+                    LINEで共有する場合は「TXT形式」を推奨します
+                </p>
+                
+                <button onclick="selectShare('txt')" style="
+                    width: 100%;
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: linear-gradient(135deg, #06C755 0%, #00B900 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    font-weight: bold;
+                    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+                ">
+                    📱 TXT形式（LINE推奨）
+                </button>
+                
+                <button onclick="selectShare('json')" style="
+                    width: 100%;
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    font-weight: bold;
+                    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+                ">
+                    💾 JSON形式（標準）
+                </button>
+                
+                <button onclick="selectShare('text-only')" style="
+                    width: 100%;
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    font-weight: bold;
+                    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+                ">
+                    📝 テキストのみ
+                </button>
+                
+                <button onclick="selectShare('cancel')" style="
+                    width: 100%;
+                    padding: 12px;
+                    background: #e0e0e0;
+                    color: #666;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-size: 14px;
+                ">
+                    キャンセル
+                </button>
+            `;
+            
+            dialog.appendChild(content);
+            document.body.appendChild(dialog);
+            
+            window.selectShare = function(choice) {
+                document.body.removeChild(dialog);
+                delete window.selectShare;
+                resolve(choice);
+            };
+        });
+    }
+
+    // テキストのみ共有
+    async function shareAsText(jsonString) {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'ダンプトラック運搬台数管理データ',
+                    text: jsonString
+                });
+                
+                alert('✅ テキストを共有しました！');
+                localStorage.setItem('lastBackupTime', new Date().toISOString());
+                updateBackupStatus('success', '共有完了');
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        await navigator.clipboard.writeText(jsonString);
+                        alert('✅ データをクリップボードにコピーしました！');
+                    }
+                }
+            }
+        } else {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(jsonString);
+                alert('✅ データをクリップボードにコピーしました！');
+            }
+        }
+    }
+
+    // JSONダイアログ表示
+    function showJsonDialog(jsonString, fileName) {
+        const dialog = document.createElement('div');
+        dialog.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        `;
+        
+        const content = document.createElement('div');
+        content.style.cssText = `
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow: auto;
+        `;
+        
+        content.innerHTML = `
+            <h3 style="margin-top: 0;">📋 データのコピー</h3>
+            <p style="color: #666; font-size: 14px;">
+                下のテキストをコピーして、「${fileName}」として保存してください。
+            </p>
+            <textarea id="jsonTextArea" style="
+                width: 100%;
+                height: 300px;
+                border: 2px solid #ddd;
+                border-radius: 5px;
+                padding: 10px;
+                font-family: monospace;
+                font-size: 12px;
+            " readonly>${jsonString}</textarea>
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                <button onclick="copyJsonText()" style="
+                    flex: 1;
+                    padding: 12px;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 16px;
+                ">📋 コピーする</button>
+                <button onclick="closeJsonDialog()" style="
+                    flex: 1;
+                    padding: 12px;
+                    background: #6c757d;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 16px;
+                ">閉じる</button>
+            </div>
+        `;
+        
+        dialog.appendChild(content);
+        document.body.appendChild(dialog);
+        
+        window.copyJsonText = function() {
+            const textarea = document.getElementById('jsonTextArea');
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                alert('✅ データをコピーしました！');
+            } catch (err) {
+                alert('⚠️ コピーに失敗しました。');
+            }
+        };
+        
+        window.closeJsonDialog = function() {
+            document.body.removeChild(dialog);
+            delete window.copyJsonText;
+            delete window.closeJsonDialog;
+        };
+    }
+
+    // データインポート
+    function importData() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json,.json,.txt,text/plain';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    
+                    if (confirm('データを読み込みますか？\n既存のデータは上書きされます。')) {
+                        projects = data.projects || [];
+                        vehicles = data.vehicles || [];
+                        records = data.records || [];
+                        
+                        saveData();
+                        renderProjectList();
+                        renderVehicleList();
+                        renderRecordList();
+                        updateAllSelects();
+                        updateStats();
+                        
+                        alert('✅ データを読み込みました！');
+                    }
+                } catch (error) {
+                    alert('❌ ファイルの読み込みに失敗しました。');
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+
+    // 自動バックアップ
+    function initAutoBackup() {
+        checkBackupStatus();
+        setInterval(checkBackupStatus, 60000); // 1分ごと
+    }
+
+    function checkBackupStatus() {
+        const lastBackup = localStorage.getItem('lastBackupTime');
+        
+        if (!lastBackup) {
+            updateBackupStatus('warning', '未バックアップ');
+            return;
+        }
+        
+        const lastBackupDate = new Date(lastBackup);
+        const now = new Date();
+        const hoursDiff = (now - lastBackupDate) / (1000 * 60 * 60);
+        
+        if (hoursDiff < 24) {
+            updateBackupStatus('success', 'バックアップ済み');
+        } else {
+            updateBackupStatus('warning', 'バックアップ推奨');
+        }
+    }
+
+    function updateBackupStatus(status, text) {
+        const statusEl = document.getElementById('backupStatus');
+        if (status === 'success') {
+            statusEl.textContent = '✅ ' + text;
+        } else if (status === 'warning') {
+            statusEl.textContent = '⚠️ ' + text;
+        }
+    }
+
+    function manualBackup() {
+        shareData();
+    }
+</script>
+```
+
+</body>
+</html>
