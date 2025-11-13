@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>車両管理・運搬管理システム</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .share-control {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .share-control label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .share-control input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid #e5e7eb;
+            margin-top: 20px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #059669;
+        }
+
+        .btn-import {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-import:hover {
+            background: #d97706;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .import-section {
+            background: #fef3c7;
+            border: 2px dashed #f59e0b;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .import-section h3 {
+            color: #d97706;
+            margin-bottom: 10px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .info-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .info-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .info-modal h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .info-item {
+            padding: 10px;
+            margin: 8px 0;
+            background: #f3f4f6;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .modal-close {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        thead {
+            background: #f3f4f6;
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        #summaryTable {
+            font-size: 13px;
+        }
+
+        #summaryTable th {
+            background: #f3f4f6;
+            font-size: 12px;
+            white-space: nowrap;
+            padding: 8px 4px;
+        }
+
+        #summaryTable td {
+            text-align: center;
+            padding: 8px 4px;
+            white-space: nowrap;
+        }
+
+        #summaryTable tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        .header-with-button {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .vehicle-count {
+            color: #666;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                font-size: 14px;
+                padding: 10px 16px;
+            }
+
+            .header-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-controls">
+                <div>
+                    <h1>🚚 車両管理・運搬管理システム</h1>
+                    <div class="share-control">
+                        <label>
+                            <input type="checkbox" id="shareMode" onchange="toggleShareMode()">
+                            <span style="font-size: 14px; font-weight: 600; color: #667eea;">🌐 データ共有モード</span>
+                        </label>
+                        <span id="shareModeStatus" style="font-size: 13px; color: #666; display: none;"></span>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="syncData()" class="btn-secondary">🔄 データ同期</button>
+                    <button onclick="showDataInfo()" class="btn-import">ℹ️ データ情報</button>
+                </div>
+            </div>
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('projects')">🏗️ 工事マスター</button>
+                <button class="tab" onclick="switchTab('vehicles')">🚛 車両マスター</button>
+                <button class="tab" onclick="switchTab('transport')">📋 運搬管理表</button>
+                <button class="tab" onclick="switchTab('summary')">📊 工事別集計表</button>
+                <button class="tab" onclick="switchTab('report')">📈 月次集計</button>
+            </div>
+        </div>
+
+        <!-- 工事マスター -->
+        <div id="projects" class="tab-content active">
+            <div class="card">
+                <div class="import-section">
+                    <h3>📤 Excelファイルからインポート</h3>
+                    <p style="margin-bottom: 15px; color: #92400e;">
+                        工事マスターのExcelファイル（.xlsx, .csv）をアップロードしてください
+                    </p>
+                    <input type="file" id="projectFileInput" class="file-input" accept=".xlsx,.xls,.csv" onchange="handleProjectFileImport(event)">
+                    <button class="btn-import" onclick="document.getElementById('projectFileInput').click()">
+                        📁 ファイルを選択
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>工事登録</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>工事名</label>
+                        <input type="text" id="projectName" placeholder="例: ○○道路改良工事">
+                    </div>
+                    <div class="form-group">
+                        <label>発注者</label>
+                        <input type="text" id="projectClient" placeholder="例: 福井県">
+                    </div>
+                    <div class="form-group">
+                        <label>地係</label>
+                        <input type="text" id="projectLocation" placeholder="例: 福井市○○町">
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="addProject()">➕ 工事を登録</button>
+            </div>
+
+            <div class="card">
+                <div class="header-with-button">
+                    <h2>工事一覧</h2>
+                    <div class="button-group">
+                        <button class="btn-secondary" onclick="exportProjectsCSV()">📥 CSV出力</button>
+                        <button class="btn-danger" onclick="clearAllProjects()">🗑️ 全削除</button>
+                    </div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>工事名</th>
+                                <th>発注者</th>
+                                <th>地係</th>
+                                <th class="text-center">運搬記録</th>
+                                <th class="text-center">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projectTableBody">
+                            <tr><td colspan="5" class="no-data">まだ工事が登録されていません</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 車両マスター -->
+        <div id="vehicles" class="tab-content">
+            <div class="card">
+                <div class="import-section">
+                    <h3>📤 Excelファイルからインポート</h3>
+                    <p style="margin-bottom: 15px; color: #92400e;">
+                        車両マスターのExcelファイル（.xlsx, .csv）をアップロードしてください
+                    </p>
+                    <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls,.csv" onchange="handleFileImport(event)">
+                    <button class="btn-import" onclick="document.getElementById('fileInput').click()">
+                        📁 ファイルを選択
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>車両登録 <span class="vehicle-count" id="vehicleCount">(0/30台)</span></h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>車番</label>
+                        <input type="text" id="vehicleNumber" placeholder="例: 福井 100 あ 1234">
+                    </div>
+                    <div class="form-group">
+                        <label>荷台長さ(m)</label>
+                        <input type="number" step="0.1" id="vehicleLength" placeholder="例: 3.5">
+                    </div>
+                    <div class="form-group">
+                        <label>荷台幅(m)</label>
+                        <input type="number" step="0.1" id="vehicleWidth" placeholder="例: 1.7">
+                    </div>
+                    <div class="form-group">
+                        <label>荷台高さ(m)</label>
+                        <input type="number" step="0.1" id="vehicleHeight" placeholder="例: 0.5">
+                    </div>
+                </div>
+                <button class="btn-primary" id="addVehicleBtn" onclick="addVehicle()">➕ 車両を登録</button>
+            </div>
+
+            <div class="card">
+                <div class="header-with-button">
+                    <h2>車両一覧</h2>
+                    <div class="button-group">
+                        <button class="btn-secondary" onclick="exportVehiclesCSV()">📥 CSV出力</button>
+                        <button class="btn-danger" onclick="clearAllVehicles()">🗑️ 全削除</button>
+                    </div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>車番</th>
+                                <th class="text-center">長さ(m)</th>
+                                <th class="text-center">幅(m)</th>
+                                <th class="text-center">高さ(m)</th>
+                                <th class="text-center">荷台容量(m³)</th>
+                                <th class="text-center">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vehicleTableBody">
+                            <tr><td colspan="6" class="no-data">まだ車両が登録されていません</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 運搬管理表 -->
+        <div id="transport" class="tab-content">
+            <div class="card">
+                <div class="header-with-button">
+                    <h2>工事選択</h2>
+                </div>
+                <div class="form-group">
+                    <label>表示する工事</label>
+                    <select id="selectedProject" onchange="updateTransportView()" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        <option value="">工事を選択してください</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="transportContent" style="display: none;">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-label">本工事の総運搬量</div>
+                    <div class="stat-value" id="projectTotal">0.00 m³</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">総台数</div>
+                    <div class="stat-value" id="projectCount">0 台</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">記録日数</div>
+                    <div class="stat-value" id="projectDays">0 日</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>運搬記録入力</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>日付</label>
+                        <input type="date" id="transportDate">
+                    </div>
+                    <div class="form-group">
+                        <label>車番</label>
+                        <select id="transportVehicle">
+                            <option value="">選択してください</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>運転者名</label>
+                        <input type="text" id="transportDriver" placeholder="例: 山田 太郎">
+                    </div>
+                    <div class="form-group">
+                        <label>台数</label>
+                        <input type="number" id="transportCount" min="1" placeholder="例: 5">
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="addTransportRecord()">➕ 記録を追加</button>
+            </div>
+
+            <div class="card">
+                <div class="header-with-button">
+                    <h2>運搬記録</h2>
+                    <button class="btn-secondary" onclick="exportTransportCSV()">📥 CSV出力</button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>日付</th>
+                                <th>車番</th>
+                                <th>運転者</th>
+                                <th class="text-center">容量(m³)</th>
+                                <th class="text-center">台数</th>
+                                <th class="text-center">合計(m³)</th>
+                                <th class="text-center">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transportTableBody">
+                            <tr><td colspan="7" class="no-data">まだ記録がありません</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- 工事別集計表 -->
+        <div id="summary" class="tab-content">
+            <div class="card">
+                <h2>工事別運搬集計表</h2>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label>集計する工事</label>
+                    <select id="summaryProject" onchange="updateSummaryTable()" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        <option value="">工事を選択してください</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="summaryContent" style="display: none;">
+                <div class="card">
+                    <div class="header-with-button">
+                        <div>
+                            <h2 id="summaryProjectName">工事名</h2>
+                            <p style="color: #666; margin-top: 5px;">
+                                <span id="summaryProjectClient">発注者</span> / <span id="summaryProjectLocation">地係</span>
+                            </p>
+                        </div>
+                        <button class="btn-secondary" onclick="exportSummaryCSV()">📥 CSV出力</button>
+                    </div>
+                    
+                    <div style="overflow-x: auto; margin-top: 20px;">
+                        <table id="summaryTable">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" style="vertical-align: middle;">日付</th>
+                                    <th colspan="20" style="text-align: center; background: #f3f4f6;">車両別運搬回数</th>
+                                    <th rowspan="2" style="vertical-align: middle; background: #dbeafe;">合計台数</th>
+                                    <th rowspan="2" style="vertical-align: middle; background: #dbeafe;">合計(m³)</th>
+                                </tr>
+                                <tr id="vehicleHeaders">
+                                </tr>
+                            </thead>
+                            <tbody id="summaryTableBody">
+                                <tr><td colspan="22" class="no-data">工事を選択してください</td></tr>
+                            </tbody>
+                            <tfoot>
+                                <tr style="background: #f3f4f6; font-weight: bold;">
+                                    <td>合計</td>
+                                    <td colspan="20" id="vehicleTotals" style="text-align: center;"></td>
+                                    <td id="totalCount" style="text-align: center; background: #dbeafe;">0</td>
+                                    <td id="totalVolume" style="text-align: center; background: #dbeafe;">0.00</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 月次集計 -->
+        <div id="report" class="tab-content">
+            <div class="card">
+                <h2>工事別・月次集計</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>工事名</th>
+                            <th>年月</th>
+                            <th class="text-center">台数</th>
+                            <th class="text-center">合計(m³)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportTableBody">
+                        <tr><td colspan="4" class="no-data">集計データがありません</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- データ情報モーダル -->
+        <div id="infoModal" class="info-modal">
+            <div class="info-modal-content">
+                <h3>📊 データ情報</h3>
+                <div class="info-item">
+                    <span>登録工事数:</span>
+                    <strong id="infoProjects">0</strong>
+                </div>
+                <div class="info-item">
+                    <span>登録車両数:</span>
+                    <strong id="infoVehicles">0</strong>
+                </div>
+                <div class="info-item">
+                    <span>運搬記録数:</span>
+                    <strong id="infoRecords">0</strong>
+                </div>
+                <div class="info-item">
+                    <span>データモード:</span>
+                    <strong id="infoMode">個人データ</strong>
+                </div>
+                <div class="info-item">
+                    <span>最終更新:</span>
+                    <strong id="infoLastUpdate">-</strong>
+                </div>
+                <button class="modal-close" onclick="closeDataInfo()">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        let vehicles = [];
+        let transportRecords = [];
+        let projects = [];
+        let currentProject = null;
+        let shareMode = false;
+        let lastSyncTime = null;
+
+        function init() {
