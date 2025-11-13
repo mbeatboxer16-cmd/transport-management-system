@@ -521,7 +521,7 @@
     <div class="container">
         <div class="header">
             <h1>🚚 ダンプトラック運搬台数管理システム</h1>
-            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.0）</p>
+            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.0.1）</p>
             <div class="backup-status" id="backupStatus" onclick="manualBackup()">
                 💾 バックアップ準備中...
             </div>
@@ -630,13 +630,24 @@
                     <label>車番 *</label>
                     <input type="text" id="vehicleNumber" placeholder="例：品川500あ1234">
                 </div>
+            </div>
+            <h3 style="font-size: 16px; margin: 20px 0 10px 0; color: #495057;">📐 荷台寸法</h3>
+            <div class="form-grid">
                 <div class="form-group">
-                    <label>荷台寸法</label>
-                    <input type="text" id="vehicleBodySize" placeholder="例：長5.2m×幅2.3m×高0.6m">
+                    <label>長さ（m）</label>
+                    <input type="number" id="vehicleLength" step="0.1" placeholder="例：5.2" oninput="calculateCapacity()">
                 </div>
                 <div class="form-group">
-                    <label>容量（m³）</label>
-                    <input type="number" id="vehicleCapacity" step="0.1" placeholder="例：7.2">
+                    <label>幅（m）</label>
+                    <input type="number" id="vehicleWidth" step="0.1" placeholder="例：2.3" oninput="calculateCapacity()">
+                </div>
+                <div class="form-group">
+                    <label>高さ（m）</label>
+                    <input type="number" id="vehicleHeight" step="0.1" placeholder="例：0.6" oninput="calculateCapacity()">
+                </div>
+                <div class="form-group">
+                    <label>容量（m³）自動計算</label>
+                    <input type="text" id="vehicleCapacity" readonly style="background: #f8f9fa; cursor: not-allowed;" placeholder="自動計算されます">
                 </div>
             </div>
             <div class="btn-group">
@@ -896,11 +907,27 @@
         container.innerHTML = html;
     }
 
+    // 容量自動計算
+    function calculateCapacity() {
+        const length = parseFloat(document.getElementById('vehicleLength').value) || 0;
+        const width = parseFloat(document.getElementById('vehicleWidth').value) || 0;
+        const height = parseFloat(document.getElementById('vehicleHeight').value) || 0;
+        
+        if (length > 0 && width > 0 && height > 0) {
+            const capacity = (length * width * height).toFixed(2);
+            document.getElementById('vehicleCapacity').value = capacity;
+        } else {
+            document.getElementById('vehicleCapacity').value = '';
+        }
+    }
+
     // 車両追加・更新
     function addVehicle() {
         const type = document.getElementById('vehicleType').value.trim();
         const number = document.getElementById('vehicleNumber').value.trim();
-        const bodySize = document.getElementById('vehicleBodySize').value.trim();
+        const length = parseFloat(document.getElementById('vehicleLength').value) || null;
+        const width = parseFloat(document.getElementById('vehicleWidth').value) || null;
+        const height = parseFloat(document.getElementById('vehicleHeight').value) || null;
         const capacity = document.getElementById('vehicleCapacity').value;
         
         if (!type || !number) {
@@ -912,15 +939,19 @@
             const vehicle = vehicles.find(v => v.id === editingVehicleId);
             vehicle.type = type;
             vehicle.number = number;
-            vehicle.bodySize = bodySize;
-            vehicle.capacity = capacity;
+            vehicle.length = length;
+            vehicle.width = width;
+            vehicle.height = height;
+            vehicle.capacity = capacity ? parseFloat(capacity) : null;
             editingVehicleId = null;
         } else {
             vehicles.push({
                 id: Date.now().toString(),
                 type,
                 number,
-                bodySize,
+                length,
+                width,
+                height,
                 capacity: capacity ? parseFloat(capacity) : null
             });
         }
@@ -937,7 +968,9 @@
         const vehicle = vehicles.find(v => v.id === id);
         document.getElementById('vehicleType').value = vehicle.type;
         document.getElementById('vehicleNumber').value = vehicle.number;
-        document.getElementById('vehicleBodySize').value = vehicle.bodySize || '';
+        document.getElementById('vehicleLength').value = vehicle.length || '';
+        document.getElementById('vehicleWidth').value = vehicle.width || '';
+        document.getElementById('vehicleHeight').value = vehicle.height || '';
         document.getElementById('vehicleCapacity').value = vehicle.capacity || '';
         editingVehicleId = id;
         
@@ -976,11 +1009,20 @@
         let html = '<table><thead><tr><th>車種</th><th>車番</th><th>荷台寸法</th><th>容量</th><th>操作</th></tr></thead><tbody>';
         
         vehicles.forEach(vehicle => {
+            // 寸法表示
+            let dimensionText = '-';
+            if (vehicle.length && vehicle.width && vehicle.height) {
+                dimensionText = `${vehicle.length}m × ${vehicle.width}m × ${vehicle.height}m`;
+            } else if (vehicle.bodySize) {
+                // 旧データ対応
+                dimensionText = vehicle.bodySize;
+            }
+            
             html += `
                 <tr>
                     <td><strong>${vehicle.type}</strong></td>
                     <td>${vehicle.number}</td>
-                    <td>${vehicle.bodySize || '-'}</td>
+                    <td>${dimensionText}</td>
                     <td>${vehicle.capacity ? vehicle.capacity + 'm³' : '-'}</td>
                     <td>
                         <div class="action-buttons">
@@ -1152,7 +1194,9 @@
     function clearVehicleForm() {
         document.getElementById('vehicleType').value = '';
         document.getElementById('vehicleNumber').value = '';
-        document.getElementById('vehicleBodySize').value = '';
+        document.getElementById('vehicleLength').value = '';
+        document.getElementById('vehicleWidth').value = '';
+        document.getElementById('vehicleHeight').value = '';
         document.getElementById('vehicleCapacity').value = '';
         editingVehicleId = null;
     }
@@ -1264,6 +1308,7 @@
                     <tr>
                         <th>車種</th>
                         <th>車番</th>
+                        <th>荷台寸法</th>
                         <th>容量</th>
                         <th>運搬台数</th>
                     </tr>
@@ -1275,10 +1320,19 @@
         Object.keys(vehicleSummary).forEach(vId => {
             const vehicle = vehicles.find(v => v.id === vId);
             if (vehicle) {
+                // 寸法表示
+                let dimensionText = '-';
+                if (vehicle.length && vehicle.width && vehicle.height) {
+                    dimensionText = `${vehicle.length}m × ${vehicle.width}m × ${vehicle.height}m`;
+                } else if (vehicle.bodySize) {
+                    dimensionText = vehicle.bodySize;
+                }
+                
                 html += `
                     <tr>
                         <td>${vehicle.type}</td>
                         <td>${vehicle.number}</td>
+                        <td>${dimensionText}</td>
                         <td>${vehicle.capacity ? vehicle.capacity + 'm³' : '-'}</td>
                         <td><strong>${vehicleSummary[vId]}台</strong></td>
                     </tr>
@@ -1289,7 +1343,7 @@
         
         html += `
                     <tr class="total-row">
-                        <td colspan="3">合計</td>
+                        <td colspan="4">合計</td>
                         <td><strong>${vehicleTotal}台</strong></td>
                     </tr>
                 </tbody>
@@ -1422,10 +1476,18 @@
         Object.keys(vehicleSummary).forEach(vId => {
             const vehicle = vehicles.find(v => v.id === vId);
             if (vehicle) {
+                // 寸法表示
+                let dimensionText = '';
+                if (vehicle.length && vehicle.width && vehicle.height) {
+                    dimensionText = `${vehicle.length}m × ${vehicle.width}m × ${vehicle.height}m`;
+                } else if (vehicle.bodySize) {
+                    dimensionText = vehicle.bodySize;
+                }
+                
                 vehicleData.push([
                     vehicle.type,
                     vehicle.number,
-                    vehicle.bodySize || '',
+                    dimensionText,
                     vehicle.capacity ? vehicle.capacity + 'm³' : '',
                     vehicleSummary[vId]
                 ]);
