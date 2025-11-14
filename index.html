@@ -521,7 +521,7 @@
     <div class="container">
         <div class="header">
             <h1>🚚 ダンプトラック運搬台数管理システム</h1>
-            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.0.2）</p>
+            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.0.3）</p>
             <div class="backup-status" id="backupStatus" onclick="manualBackup()">
                 💾 バックアップ準備中...
             </div>
@@ -817,20 +817,38 @@
 
     // データ保存
     function saveData() {
-        localStorage.setItem('dumpTruckProjects', JSON.stringify(projects));
-        localStorage.setItem('dumpTruckVehicles', JSON.stringify(vehicles));
-        localStorage.setItem('dumpTruckRecords', JSON.stringify(records));
+        try {
+            console.log('データ保存: 工事', projects.length, '車両', vehicles.length, '記録', records.length);
+            localStorage.setItem('dumpTruckProjects', JSON.stringify(projects));
+            localStorage.setItem('dumpTruckVehicles', JSON.stringify(vehicles));
+            localStorage.setItem('dumpTruckRecords', JSON.stringify(records));
+            console.log('データ保存成功');
+        } catch (error) {
+            console.error('データ保存エラー:', error);
+            alert('⚠️ データの保存に失敗しました。\nブラウザのストレージ容量を確認してください。');
+        }
     }
 
     // データ読み込み
     function loadData() {
-        projects = JSON.parse(localStorage.getItem('dumpTruckProjects')) || [];
-        vehicles = JSON.parse(localStorage.getItem('dumpTruckVehicles')) || [];
-        records = JSON.parse(localStorage.getItem('dumpTruckRecords')) || [];
-        
-        renderProjectList();
-        renderVehicleList();
-        renderRecordList();
+        try {
+            console.log('データ読み込み開始');
+            projects = JSON.parse(localStorage.getItem('dumpTruckProjects')) || [];
+            vehicles = JSON.parse(localStorage.getItem('dumpTruckVehicles')) || [];
+            records = JSON.parse(localStorage.getItem('dumpTruckRecords')) || [];
+            console.log('データ読み込み完了: 工事', projects.length, '車両', vehicles.length, '記録', records.length);
+            
+            renderProjectList();
+            renderVehicleList();
+            renderRecordList();
+        } catch (error) {
+            console.error('データ読み込みエラー:', error);
+            alert('⚠️ データの読み込みに失敗しました。\nブラウザのコンソール（F12）を確認してください。');
+            // エラー時は空配列で初期化
+            projects = [];
+            vehicles = [];
+            records = [];
+        }
     }
 
     // 工事追加・更新
@@ -1061,58 +1079,114 @@
 
     // 運搬記録追加・更新
     function addRecord() {
-        const date = document.getElementById('recordDate').value;
-        const projectId = document.getElementById('recordProject').value;
-        const vehicleId = document.getElementById('recordVehicle').value;
-        const countValue = document.getElementById('recordCount').value;
-        const count = parseInt(countValue);
-        
-        // デバッグ情報
-        console.log('運搬記録追加:', { date, projectId, vehicleId, countValue, count });
-        
-        // 詳細なバリデーション
-        if (!date) {
-            alert('❌ 日付を入力してください。');
-            return;
+        try {
+            console.log('=== 運搬記録追加開始 ===');
+            
+            const date = document.getElementById('recordDate').value;
+            console.log('日付:', date);
+            
+            const projectId = document.getElementById('recordProject').value;
+            console.log('工事ID:', projectId);
+            
+            const vehicleId = document.getElementById('recordVehicle').value;
+            console.log('車両ID:', vehicleId);
+            
+            const countValue = document.getElementById('recordCount').value;
+            console.log('運搬台数(文字列):', countValue);
+            
+            const count = parseInt(countValue);
+            console.log('運搬台数(数値):', count);
+            
+            // 詳細なバリデーション
+            if (!date) {
+                console.error('エラー: 日付が未入力');
+                alert('❌ 日付を入力してください。');
+                return;
+            }
+            
+            if (!projectId) {
+                console.error('エラー: 工事が未選択');
+                alert('❌ 工事を選択してください。\n\n先に「工事マスター」タブで工事を登録してください。');
+                return;
+            }
+            
+            if (!vehicleId) {
+                console.error('エラー: 車両が未選択');
+                alert('❌ 車両を選択してください。\n\n先に「車両マスター」タブで車両を登録してください。');
+                return;
+            }
+            
+            if (!countValue) {
+                console.error('エラー: 運搬台数が未入力');
+                alert('❌ 運搬台数を入力してください。');
+                return;
+            }
+            
+            if (isNaN(count)) {
+                console.error('エラー: 運搬台数が数値ではない');
+                alert('❌ 運搬台数は数値で入力してください。');
+                return;
+            }
+            
+            if (count < 1) {
+                console.error('エラー: 運搬台数が1未満');
+                alert('❌ 運搬台数は1以上で入力してください。');
+                return;
+            }
+            
+            console.log('バリデーション通過');
+            
+            if (editingRecordId) {
+                console.log('編集モード:', editingRecordId);
+                const record = records.find(r => r.id === editingRecordId);
+                if (record) {
+                    record.date = date;
+                    record.projectId = projectId;
+                    record.vehicleId = vehicleId;
+                    record.count = count;
+                    console.log('記録を更新:', record);
+                } else {
+                    console.error('編集対象の記録が見つかりません');
+                }
+                editingRecordId = null;
+            } else {
+                console.log('新規追加モード');
+                const newRecord = {
+                    id: Date.now().toString(),
+                    date,
+                    projectId,
+                    vehicleId,
+                    count
+                };
+                records.push(newRecord);
+                console.log('新しい記録を追加:', newRecord);
+                console.log('全記録数:', records.length);
+            }
+            
+            console.log('データ保存開始');
+            saveData();
+            console.log('データ保存完了');
+            
+            console.log('リスト再描画開始');
+            renderRecordList();
+            console.log('リスト再描画完了');
+            
+            console.log('フォームクリア開始');
+            clearRecordForm();
+            console.log('フォームクリア完了');
+            
+            console.log('統計更新開始');
+            updateStats();
+            console.log('統計更新完了');
+            
+            console.log('=== 運搬記録追加成功 ===');
+            alert('✅ 運搬記録を保存しました！');
+        } catch (error) {
+            console.error('=== 運搬記録追加でエラー発生 ===');
+            console.error('エラー内容:', error);
+            console.error('エラースタック:', error.stack);
+            alert('❌ エラーが発生しました。\n\nブラウザのコンソール（F12）を開いて詳細を確認してください。\n\nエラー: ' + error.message);
         }
-        
-        if (!projectId) {
-            alert('❌ 工事を選択してください。\n\n先に「工事マスター」タブで工事を登録してください。');
-            return;
-        }
-        
-        if (!vehicleId) {
-            alert('❌ 車両を選択してください。\n\n先に「車両マスター」タブで車両を登録してください。');
-            return;
-        }
-        
-        if (!countValue || isNaN(count) || count < 1) {
-            alert('❌ 運搬台数を正しく入力してください。\n（1以上の数値を入力）');
-            return;
-        }
-        
-        if (editingRecordId) {
-            const record = records.find(r => r.id === editingRecordId);
-            record.date = date;
-            record.projectId = projectId;
-            record.vehicleId = vehicleId;
-            record.count = count;
-            editingRecordId = null;
-        } else {
-            records.push({
-                id: Date.now().toString(),
-                date,
-                projectId,
-                vehicleId,
-                count
-            });
-        }
-        
-        saveData();
-        renderRecordList();
-        clearRecordForm();
-        updateStats();
-        alert('✅ 運搬記録を保存しました！');
     }
 
     // 運搬記録編集
@@ -1140,47 +1214,73 @@
 
     // 運搬記録リスト表示
     function renderRecordList() {
-        const container = document.getElementById('recordList');
-        
-        if (records.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">📝</div>
-                    <p>まだ運搬記録がありません。</p>
-                    <p>上のフォームから運搬記録を入力してください。</p>
-                </div>
-            `;
-            return;
-        }
-        
-        // 日付降順でソート
-        const sortedRecords = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
-        
-        let html = '<table><thead><tr><th>日付</th><th>工事</th><th>車両</th><th>車番</th><th>運搬台数</th><th>操作</th></tr></thead><tbody>';
-        
-        sortedRecords.forEach(record => {
-            const project = projects.find(p => p.id === record.projectId);
-            const vehicle = vehicles.find(v => v.id === record.vehicleId);
+        try {
+            console.log('運搬記録リスト表示開始, 記録数:', records.length);
+            const container = document.getElementById('recordList');
             
-            html += `
-                <tr>
-                    <td>${record.date}</td>
-                    <td>${project ? project.name : '（削除済み）'}</td>
-                    <td>${vehicle ? vehicle.type : '（削除済み）'}</td>
-                    <td>${vehicle ? vehicle.number : '-'}</td>
-                    <td><strong>${record.count}台</strong></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn btn-secondary" onclick="editRecord('${record.id}')">✏️ 編集</button>
-                            <button class="btn btn-danger" onclick="deleteRecord('${record.id}')">🗑️ 削除</button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        });
-        
-        html += '</tbody></table>';
-        container.innerHTML = html;
+            if (!container) {
+                console.error('recordListコンテナが見つかりません');
+                return;
+            }
+            
+            if (records.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>まだ運搬記録がありません。</p>
+                        <p>上のフォームから運搬記録を入力してください。</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 日付降順でソート
+            const sortedRecords = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
+            console.log('ソート済み記録数:', sortedRecords.length);
+            
+            let html = '<table><thead><tr><th>日付</th><th>工事</th><th>車両</th><th>車番</th><th>運搬台数</th><th>操作</th></tr></thead><tbody>';
+            
+            sortedRecords.forEach((record, index) => {
+                try {
+                    const project = projects.find(p => p.id === record.projectId);
+                    const vehicle = vehicles.find(v => v.id === record.vehicleId);
+                    
+                    html += `
+                        <tr>
+                            <td>${record.date}</td>
+                            <td>${project ? project.name : '（削除済み）'}</td>
+                            <td>${vehicle ? vehicle.type : '（削除済み）'}</td>
+                            <td>${vehicle ? vehicle.number : '-'}</td>
+                            <td><strong>${record.count}台</strong></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-secondary" onclick="editRecord('${record.id}')">✏️ 編集</button>
+                                    <button class="btn btn-danger" onclick="deleteRecord('${record.id}')">🗑️ 削除</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                } catch (rowError) {
+                    console.error(`記録行${index}の表示でエラー:`, rowError, record);
+                }
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+            console.log('運搬記録リスト表示完了');
+        } catch (error) {
+            console.error('運搬記録リスト表示でエラー:', error);
+            const container = document.getElementById('recordList');
+            if (container) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">❌</div>
+                        <p>表示中にエラーが発生しました。</p>
+                        <p>ブラウザのコンソール（F12）を確認してください。</p>
+                    </div>
+                `;
+            }
+        }
     }
 
     // セレクトボックス更新
@@ -1249,12 +1349,29 @@
 
     // 統計更新
     function updateStats() {
-        document.getElementById('projectCount').textContent = projects.length;
-        document.getElementById('vehicleCount').textContent = vehicles.length;
-        document.getElementById('recordCount').textContent = records.length;
-        
-        const totalCount = records.reduce((sum, record) => sum + record.count, 0);
-        document.getElementById('totalCount').textContent = totalCount;
+        try {
+            console.log('統計更新開始');
+            const projectCountEl = document.getElementById('projectCount');
+            const vehicleCountEl = document.getElementById('vehicleCount');
+            const recordCountEl = document.getElementById('recordCount');
+            const totalCountEl = document.getElementById('totalCount');
+            
+            if (projectCountEl) projectCountEl.textContent = projects.length;
+            if (vehicleCountEl) vehicleCountEl.textContent = vehicles.length;
+            if (recordCountEl) recordCountEl.textContent = records.length;
+            
+            const totalCount = records.reduce((sum, record) => sum + (record.count || 0), 0);
+            if (totalCountEl) totalCountEl.textContent = totalCount;
+            
+            console.log('統計更新完了:', {
+                projects: projects.length,
+                vehicles: vehicles.length,
+                records: records.length,
+                totalCount: totalCount
+            });
+        } catch (error) {
+            console.error('統計更新エラー:', error);
+        }
     }
 
     // フォームクリア
