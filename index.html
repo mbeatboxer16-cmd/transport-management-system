@@ -526,7 +526,7 @@
     <div class="container">
         <div class="header">
             <h1>🚚 ダンプトラック運搬台数管理システム</h1>
-            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.0.6）</p>
+            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.1.0）</p>
             <div class="backup-status" id="backupStatus" onclick="manualBackup()">
                 💾 バックアップ準備中...
             </div>
@@ -588,6 +588,27 @@
                     <h3>総運搬台数</h3>
                     <div class="stat-value" id="totalCount">0</div>
                 </div>
+            </div>
+
+            <div class="card" style="margin-top: 40px;">
+                <h2>💾 データ管理</h2>
+                <p style="color: #6c757d; margin-bottom: 20px;">データのバックアップ、復元、結合を行えます</p>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="saveDataToFile()">
+                        💾 データを保存
+                    </button>
+                    <button class="btn btn-danger" onclick="loadDataFromFile('overwrite')">
+                        📥 データを上書き読み込み
+                    </button>
+                    <button class="btn btn-success" onclick="loadDataFromFile('merge')">
+                        🔗 データを結合読み込み
+                    </button>
+                </div>
+                <small style="display: block; margin-top: 15px; color: #6c757d;">
+                    <strong>💾 保存：</strong>現在のデータをファイルに保存します<br>
+                    <strong>📥 上書き：</strong>ファイルから読み込み、現在のデータを完全に置き換えます<br>
+                    <strong>🔗 結合：</strong>ファイルから読み込み、現在のデータに追加します（重複はスキップ）
+                </small>
             </div>
         </div>
     </div>
@@ -2125,7 +2146,245 @@
         };
     }
 
-    // データインポート
+    // データ保存機能
+    function saveDataToFile() {
+        const data = {
+            version: '1.1.0',
+            projects,
+            vehicles,
+            records,
+            exportDate: new Date().toISOString(),
+            stats: {
+                projectCount: projects.length,
+                vehicleCount: vehicles.length,
+                recordCount: records.length,
+                totalCount: records.reduce((sum, record) => sum + (record.count || 0), 0)
+            }
+        };
+        
+        const jsonString = JSON.stringify(data, null, 2);
+        const dateStr = new Date().toISOString().split('T')[0];
+        const fileName = `dump-truck-backup-${dateStr}.json`;
+        
+        try {
+            const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.style.display = 'none';
+            
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+            
+            alert('✅ データを保存しました！\n\nファイル名: ' + fileName + '\n\n工事: ' + projects.length + '件\n車両: ' + vehicles.length + '台\n記録: ' + records.length + '件');
+            localStorage.setItem('lastBackupTime', new Date().toISOString());
+            updateBackupStatus('success', 'バックアップ完了');
+        } catch (error) {
+            console.error('保存エラー:', error);
+            alert('❌ データの保存に失敗しました。');
+        }
+    }
+
+    // データ読み込み機能（上書き/結合）
+    function loadDataFromFile(mode) {
+        const modeText = mode === 'overwrite' ? '上書き' : '結合';
+        const warningText = mode === 'overwrite' 
+            ? '⚠️ 警告：現在のデータは完全に削除されます！\n\n' 
+            : '';
+        
+        if (!confirm(warningText + `${modeText}読み込みを実行します。\n\nファイルを選択してください。`)) {
+            return;
+        }
+        
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json,.json,.txt,text/plain';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    
+                    // データ検証
+                    if (!data.projects || !data.vehicles || !data.records) {
+                        throw new Error('無効なデータ形式です');
+                    }
+                    
+                    if (mode === 'overwrite') {
+                        // 上書きモード
+                        executeOverwrite(data);
+                    } else {
+                        // 結合モード
+                        executeMerge(data);
+                    }
+                } catch (error) {
+                    console.error('読み込みエラー:', error);
+                    alert('❌ ファイルの読み込みに失敗しました。\n\nエラー: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+
+    // 上書き実行
+    function executeOverwrite(data) {
+        const stats = `工事: ${data.projects.length}件\n車両: ${data.vehicles.length}台\n記録: ${data.records.length}件`;
+        
+        if (!confirm(`以下のデータで上書きします。よろしいですか？\n\n${stats}\n\n※現在のデータは完全に削除されます`)) {
+            return;
+        }
+        
+        projects = data.projects || [];
+        vehicles = data.vehicles || [];
+        records = data.records || [];
+        
+        saveData();
+        renderProjectList();
+        renderVehicleList();
+        renderRecordList();
+        updateAllSelects();
+        updateStats();
+        
+        alert(`✅ データを上書きしました！\n\n${stats}`);
+    }
+
+    // 結合実行
+    function executeMerge(data) {
+        let mergeStats = {
+            projectAdded: 0,
+            projectSkipped: 0,
+            vehicleAdded: 0,
+            vehicleSkipped: 0,
+            recordAdded: 0,
+            recordSkipped: 0
+        };
+        
+        // 工事の結合
+        (data.projects || []).forEach(newProject => {
+            const exists = projects.find(p => 
+                p.name === newProject.name && 
+                p.location === newProject.location
+            );
+            if (!exists) {
+                // 新しいIDを割り当て
+                const mergedProject = {
+                    ...newProject,
+                    id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+                };
+                projects.push(mergedProject);
+                mergeStats.projectAdded++;
+            } else {
+                mergeStats.projectSkipped++;
+            }
+        });
+        
+        // 車両の結合
+        (data.vehicles || []).forEach(newVehicle => {
+            const exists = vehicles.find(v => 
+                v.type === newVehicle.type && 
+                v.number === newVehicle.number
+            );
+            if (!exists) {
+                // 新しいIDを割り当て
+                const mergedVehicle = {
+                    ...newVehicle,
+                    id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+                };
+                vehicles.push(mergedVehicle);
+                mergeStats.vehicleAdded++;
+            } else {
+                mergeStats.vehicleSkipped++;
+            }
+        });
+        
+        // 記録の結合（工事名・車両情報でマッチング）
+        (data.records || []).forEach(newRecord => {
+            // 元データから工事と車両の情報を取得
+            const srcProject = (data.projects || []).find(p => p.id === newRecord.projectId);
+            const srcVehicle = (data.vehicles || []).find(v => v.id === newRecord.vehicleId);
+            
+            if (!srcProject || !srcVehicle) {
+                mergeStats.recordSkipped++;
+                return;
+            }
+            
+            // 現在のデータから対応する工事と車両を検索
+            const destProject = projects.find(p => 
+                p.name === srcProject.name && 
+                p.location === srcProject.location
+            );
+            const destVehicle = vehicles.find(v => 
+                v.type === srcVehicle.type && 
+                v.number === srcVehicle.number
+            );
+            
+            if (!destProject || !destVehicle) {
+                mergeStats.recordSkipped++;
+                return;
+            }
+            
+            // 重複チェック（同じ日付・工事・車両の記録）
+            const exists = records.find(r => 
+                r.date === newRecord.date && 
+                r.projectId === destProject.id && 
+                r.vehicleId === destVehicle.id
+            );
+            
+            if (!exists) {
+                const mergedRecord = {
+                    id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                    date: newRecord.date,
+                    projectId: destProject.id,
+                    vehicleId: destVehicle.id,
+                    count: newRecord.count
+                };
+                records.push(mergedRecord);
+                mergeStats.recordAdded++;
+            } else {
+                mergeStats.recordSkipped++;
+            }
+        });
+        
+        saveData();
+        renderProjectList();
+        renderVehicleList();
+        renderRecordList();
+        updateAllSelects();
+        updateStats();
+        
+        const resultMessage = `✅ データを結合しました！
+```
+
+【追加】
+工事: ${mergeStats.projectAdded}件
+車両: ${mergeStats.vehicleAdded}台
+記録: ${mergeStats.recordAdded}件
+
+【スキップ（重複）】
+工事: ${mergeStats.projectSkipped}件
+車両: ${mergeStats.vehicleSkipped}台
+記録: ${mergeStats.recordSkipped}件
+
+【結合後の合計】
+工事: ${projects.length}件
+車両: ${vehicles.length}台
+記録: ${records.length}件`;
+
+```
+        alert(resultMessage);
+    }
+
+    // データインポート（既存関数を残す）
     function importData() {
         const input = document.createElement('input');
         input.type = 'file';
