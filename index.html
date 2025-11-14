@@ -526,7 +526,7 @@
     <div class="container">
         <div class="header">
             <h1>🚚 ダンプトラック運搬台数管理システム</h1>
-            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.0.4）</p>
+            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.0.5）</p>
             <div class="backup-status" id="backupStatus" onclick="manualBackup()">
                 💾 バックアップ準備中...
             </div>
@@ -582,7 +582,7 @@
                 </div>
                 <div class="stat-card">
                     <h3>記録件数</h3>
-                    <div class="stat-value" id="recordCount">0</div>
+                    <div class="stat-value" id="recordCountStat">0</div>
                 </div>
                 <div class="stat-card">
                     <h3>総運搬台数</h3>
@@ -1093,6 +1093,11 @@
             const projectSelect = document.getElementById('recordProject');
             const vehicleSelect = document.getElementById('recordVehicle');
             const countInput = document.getElementById('recordCount');
+            console.log('0. countInput要素:', countInput);
+            console.log('0-1. countInput.value:', countInput ? countInput.value : 'countInputがnull');
+            console.log('0-2. countInput.value type:', countInput ? typeof countInput.value : 'N/A');
+            console.log('0-3. countInput.value === "":', countInput ? (countInput.value === '') : 'N/A');
+            console.log('0-4. countInput.value === null:', countInput ? (countInput.value === null) : 'N/A');
             
             // エラースタイルをクリア
             if (countInput) countInput.classList.remove('error');
@@ -1108,7 +1113,7 @@
             console.log('3. 車両ID取得:', vehicleId);
             
             const countValue = (countInput && countInput.value != null) ? String(countInput.value).trim() : '';
-            console.log('4. 運搬台数取得:', countValue, 'type:', typeof countValue);
+            console.log('4. 運搬台数取得:', countValue, 'type:', typeof countValue, 'length:', countValue.length);
             
             console.log('5. 全取得完了 - date:', date, 'projectId:', projectId, 'vehicleId:', vehicleId, 'countValue:', countValue);
             
@@ -1442,7 +1447,7 @@
             console.log('統計更新開始');
             const projectCountEl = document.getElementById('projectCount');
             const vehicleCountEl = document.getElementById('vehicleCount');
-            const recordCountEl = document.getElementById('recordCount');
+            const recordCountEl = document.getElementById('recordCountStat');
             const totalCountEl = document.getElementById('totalCount');
             
             if (projectCountEl) projectCountEl.textContent = projects.length;
