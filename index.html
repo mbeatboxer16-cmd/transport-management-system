@@ -1101,7 +1101,7 @@
             const date = dateInput ? dateInput.value : '';
             const projectId = projectSelect ? projectSelect.value : '';
             const vehicleId = vehicleSelect ? vehicleSelect.value : '';
-            const countValue = countInput ? countInput.value.trim() : '';
+            const countValue = (countInput && countInput.value != null) ? String(countInput.value).trim() : '';
             
             console.log('取得した値:', { date, projectId, vehicleId, countValue });
             
