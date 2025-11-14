@@ -526,7 +526,7 @@
     <div class="container">
         <div class="header">
             <h1>🚚 ダンプトラック運搬台数管理システム</h1>
-            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.0.5）</p>
+            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.0.6）</p>
             <div class="backup-status" id="backupStatus" onclick="manualBackup()">
                 💾 バックアップ準備中...
             </div>
@@ -1093,64 +1093,41 @@
             const projectSelect = document.getElementById('recordProject');
             const vehicleSelect = document.getElementById('recordVehicle');
             const countInput = document.getElementById('recordCount');
-            console.log('0. countInput要素:', countInput);
-            console.log('0-1. countInput.value:', countInput ? countInput.value : 'countInputがnull');
-            console.log('0-2. countInput.value type:', countInput ? typeof countInput.value : 'N/A');
-            console.log('0-3. countInput.value === "":', countInput ? (countInput.value === '') : 'N/A');
-            console.log('0-4. countInput.value === null:', countInput ? (countInput.value === null) : 'N/A');
             
             // エラースタイルをクリア
             if (countInput) countInput.classList.remove('error');
             
             // 値の取得
             const date = dateInput ? dateInput.value : '';
-            console.log('1. 日付取得:', date);
-            
             const projectId = projectSelect ? projectSelect.value : '';
-            console.log('2. 工事ID取得:', projectId);
-            
             const vehicleId = vehicleSelect ? vehicleSelect.value : '';
-            console.log('3. 車両ID取得:', vehicleId);
-            
             const countValue = (countInput && countInput.value != null) ? String(countInput.value).trim() : '';
-            console.log('4. 運搬台数取得:', countValue, 'type:', typeof countValue, 'length:', countValue.length);
             
-            console.log('5. 全取得完了 - date:', date, 'projectId:', projectId, 'vehicleId:', vehicleId, 'countValue:', countValue);
+            console.log('取得した値:', { date, projectId, vehicleId, countValue });
             
             // 日付チェック
             if (!date) {
-                console.log('❌ 日付が空です');
                 alert('❌ 日付を入力してください。');
                 if (dateInput) dateInput.focus();
                 return;
             }
-            console.log('✓ 日付チェックOK');
-            console.log('✓ 日付チェックOK');
             
             // 工事チェック
-            console.log('6. 工事チェック開始 - projectId:', projectId);
             if (!projectId || projectId === '') {
-                console.log('❌ 工事が未選択です');
                 alert('❌ 工事を選択してください。\n\n先に「工事マスター」タブで工事を登録してください。');
                 if (projectSelect) projectSelect.focus();
                 return;
             }
-            console.log('✓ 工事チェックOK');
             
             // 車両チェック
-            console.log('7. 車両チェック開始 - vehicleId:', vehicleId);
             if (!vehicleId || vehicleId === '') {
-                console.log('❌ 車両が未選択です');
                 alert('❌ 車両を選択してください。\n\n先に「車両マスター」タブで車両を登録してください。');
                 if (vehicleSelect) vehicleSelect.focus();
                 return;
             }
-            console.log('✓ 車両チェックOK');
             
             // 運搬台数チェック
-            console.log('8. 運搬台数チェック開始 - countValue:', countValue);
             if (!countValue || countValue === '') {
-                console.log('❌ 運搬台数が空です');
                 alert('❌ 運搬台数を入力してください。\n\n例：10');
                 if (countInput) {
                     countInput.classList.add('error');
@@ -1158,18 +1135,14 @@
                 }
                 return;
             }
-            console.log('✓ 運搬台数が入力されています');
             
             // 数値に変換
-            console.log('9. 数値変換開始 - countValue:', countValue);
             const count = parseInt(countValue, 10);
-            console.log('10. 変換後の運搬台数:', count, 'type:', typeof count, 'isNaN:', isNaN(count));
-            console.log('10. 変換後の運搬台数:', count, 'type:', typeof count, 'isNaN:', isNaN(count));
+            console.log('変換後の運搬台数:', count, 'type:', typeof count);
+            console.log('変換後の運搬台数:', count, 'type:', typeof count);
             
             // 数値の妥当性チェック
-            console.log('11. 数値妥当性チェック開始');
             if (isNaN(count)) {
-                console.log('❌ NaNです - countValue:', countValue);
                 alert('❌ 運搬台数は数値で入力してください。\n\n入力された値: ' + countValue + '\n正しい例: 10');
                 if (countInput) {
                     countInput.classList.add('error');
@@ -1178,10 +1151,8 @@
                 }
                 return;
             }
-            console.log('✓ NaNチェックOK');
             
             if (count < 1) {
-                console.log('❌ 1未満です - count:', count);
                 alert('❌ 運搬台数は1以上で入力してください。\n\n入力された値: ' + count);
                 if (countInput) {
                     countInput.classList.add('error');
@@ -1190,10 +1161,8 @@
                 }
                 return;
             }
-            console.log('✓ 最小値チェックOK');
             
             if (count > 9999) {
-                console.log('❌ 9999超過です - count:', count);
                 alert('❌ 運搬台数は9999以下で入力してください。\n\n入力された値: ' + count);
                 if (countInput) {
                     countInput.classList.add('error');
@@ -1201,12 +1170,9 @@
                 }
                 return;
             }
-            console.log('✓ 最大値チェックOK');
             
-            // 小数チェック（parseIntを使っているので整数になっているが念のため）
-            console.log('12. 小数チェック開始');
+            // 小数チェック
             if (countValue.includes('.') || countValue.includes(',')) {
-                console.log('❌ 小数が含まれています - countValue:', countValue);
                 alert('❌ 運搬台数は整数で入力してください（小数点は使用できません）。\n\n入力された値: ' + countValue + '\n正しい例: 10');
                 if (countInput) {
                     countInput.classList.add('error');
@@ -1215,9 +1181,8 @@
                 }
                 return;
             }
-            console.log('✓ 小数チェックOK');
             
-            console.log('13. ✅ すべてのバリデーション通過！');
+            console.log('✓ すべてのバリデーション通過');
             console.log('13. ✅ すべてのバリデーション通過！');
             
             // データの保存
@@ -1528,19 +1493,35 @@
         // 工事別集計
         const projectSummary = {};
         filteredRecords.forEach(record => {
+            const vehicle = vehicles.find(v => v.id === record.vehicleId);
+            const capacity = vehicle && vehicle.capacity ? vehicle.capacity : 0;
+            const volume = record.count * capacity;
+            
             if (!projectSummary[record.projectId]) {
-                projectSummary[record.projectId] = 0;
+                projectSummary[record.projectId] = {
+                    count: 0,
+                    volume: 0
+                };
             }
-            projectSummary[record.projectId] += record.count;
+            projectSummary[record.projectId].count += record.count;
+            projectSummary[record.projectId].volume += volume;
         });
         
         // 車両別集計
         const vehicleSummary = {};
         filteredRecords.forEach(record => {
+            const vehicle = vehicles.find(v => v.id === record.vehicleId);
+            const capacity = vehicle && vehicle.capacity ? vehicle.capacity : 0;
+            const volume = record.count * capacity;
+            
             if (!vehicleSummary[record.vehicleId]) {
-                vehicleSummary[record.vehicleId] = 0;
+                vehicleSummary[record.vehicleId] = {
+                    count: 0,
+                    volume: 0
+                };
             }
-            vehicleSummary[record.vehicleId] += record.count;
+            vehicleSummary[record.vehicleId].count += record.count;
+            vehicleSummary[record.vehicleId].volume += volume;
         });
         
         // 日付別集計
@@ -1562,23 +1543,28 @@
                             <th>工事名</th>
                             <th>工事箇所</th>
                             <th>運搬台数</th>
+                            <th>運搬量（m³）</th>
                         </tr>
                     </thead>
                     <tbody>
         `;
         
         let projectTotal = 0;
+        let projectVolumeTotal = 0;
         Object.keys(projectSummary).forEach(pId => {
             const project = projects.find(p => p.id === pId);
             if (project) {
+                const summary = projectSummary[pId];
                 html += `
                     <tr>
                         <td>${project.name}</td>
                         <td>${project.location || '-'}</td>
-                        <td><strong>${projectSummary[pId]}台</strong></td>
+                        <td><strong>${summary.count}台</strong></td>
+                        <td><strong>${summary.volume.toFixed(2)}m³</strong></td>
                     </tr>
                 `;
-                projectTotal += projectSummary[pId];
+                projectTotal += summary.count;
+                projectVolumeTotal += summary.volume;
             }
         });
         
@@ -1586,6 +1572,7 @@
                     <tr class="total-row">
                         <td colspan="2">合計</td>
                         <td><strong>${projectTotal}台</strong></td>
+                        <td><strong>${projectVolumeTotal.toFixed(2)}m³</strong></td>
                     </tr>
                 </tbody>
             </table>
@@ -1601,15 +1588,18 @@
                         <th>荷台寸法</th>
                         <th>容量</th>
                         <th>運搬台数</th>
+                        <th>運搬量（m³）</th>
                     </tr>
                 </thead>
                 <tbody>
         `;
         
         let vehicleTotal = 0;
+        let vehicleVolumeTotal = 0;
         Object.keys(vehicleSummary).forEach(vId => {
             const vehicle = vehicles.find(v => v.id === vId);
             if (vehicle) {
+                const summary = vehicleSummary[vId];
                 // 寸法表示
                 let dimensionText = '-';
                 if (vehicle.length && vehicle.width && vehicle.height) {
@@ -1624,10 +1614,12 @@
                         <td>${vehicle.number}</td>
                         <td>${dimensionText}</td>
                         <td>${vehicle.capacity ? vehicle.capacity + 'm³' : '-'}</td>
-                        <td><strong>${vehicleSummary[vId]}台</strong></td>
+                        <td><strong>${summary.count}台</strong></td>
+                        <td><strong>${summary.volume.toFixed(2)}m³</strong></td>
                     </tr>
                 `;
-                vehicleTotal += vehicleSummary[vId];
+                vehicleTotal += summary.count;
+                vehicleVolumeTotal += summary.volume;
             }
         });
         
@@ -1635,6 +1627,7 @@
                     <tr class="total-row">
                         <td colspan="4">合計</td>
                         <td><strong>${vehicleTotal}台</strong></td>
+                        <td><strong>${vehicleVolumeTotal.toFixed(2)}m³</strong></td>
                     </tr>
                 </tbody>
             </table>
@@ -1707,65 +1700,88 @@
         
         // 工事別集計シート
         const projectData = [
-            ['工事別運搬台数集計'],
+            ['工事別運搬台数・運搬量集計'],
             ['期間', `${startDate} 〜 ${endDate}`],
             [],
-            ['工事名', '工事箇所', '請負者', '運搬台数']
+            ['工事名', '工事箇所', '請負者', '運搬台数', '運搬量（m³）']
         ];
         
         const projectSummary = {};
         filteredRecords.forEach(record => {
+            const vehicle = vehicles.find(v => v.id === record.vehicleId);
+            const capacity = vehicle && vehicle.capacity ? vehicle.capacity : 0;
+            const volume = record.count * capacity;
+            
             if (!projectSummary[record.projectId]) {
-                projectSummary[record.projectId] = 0;
+                projectSummary[record.projectId] = {
+                    count: 0,
+                    volume: 0
+                };
             }
-            projectSummary[record.projectId] += record.count;
+            projectSummary[record.projectId].count += record.count;
+            projectSummary[record.projectId].volume += volume;
         });
         
         let projectTotal = 0;
+        let projectVolumeTotal = 0;
         Object.keys(projectSummary).forEach(pId => {
             const project = projects.find(p => p.id === pId);
             if (project) {
+                const summary = projectSummary[pId];
                 projectData.push([
                     project.name,
                     project.location || '',
                     project.contractor || '',
-                    projectSummary[pId]
+                    summary.count,
+                    parseFloat(summary.volume.toFixed(2))
                 ]);
-                projectTotal += projectSummary[pId];
+                projectTotal += summary.count;
+                projectVolumeTotal += summary.volume;
             }
         });
         
-        projectData.push(['', '', '合計', projectTotal]);
+        projectData.push(['', '', '合計', projectTotal, parseFloat(projectVolumeTotal.toFixed(2))]);
         
         const projectSheet = XLSX.utils.aoa_to_sheet(projectData);
         projectSheet['!cols'] = [
             { wch: 30 },
             { wch: 25 },
             { wch: 25 },
-            { wch: 12 }
+            { wch: 12 },
+            { wch: 15 }
         ];
         XLSX.utils.book_append_sheet(workbook, projectSheet, '工事別集計');
         
         // 車両別集計シート
         const vehicleData = [
-            ['車両別運搬台数集計'],
+            ['車両別運搬台数・運搬量集計'],
             ['期間', `${startDate} 〜 ${endDate}`],
             [],
-            ['車種', '車番', '荷台寸法', '容量', '運搬台数']
+            ['車種', '車番', '荷台寸法', '容量', '運搬台数', '運搬量（m³）']
         ];
         
         const vehicleSummary = {};
         filteredRecords.forEach(record => {
+            const vehicle = vehicles.find(v => v.id === record.vehicleId);
+            const capacity = vehicle && vehicle.capacity ? vehicle.capacity : 0;
+            const volume = record.count * capacity;
+            
             if (!vehicleSummary[record.vehicleId]) {
-                vehicleSummary[record.vehicleId] = 0;
+                vehicleSummary[record.vehicleId] = {
+                    count: 0,
+                    volume: 0
+                };
             }
-            vehicleSummary[record.vehicleId] += record.count;
+            vehicleSummary[record.vehicleId].count += record.count;
+            vehicleSummary[record.vehicleId].volume += volume;
         });
         
         let vehicleTotal = 0;
+        let vehicleVolumeTotal = 0;
         Object.keys(vehicleSummary).forEach(vId => {
             const vehicle = vehicles.find(v => v.id === vId);
             if (vehicle) {
+                const summary = vehicleSummary[vId];
                 // 寸法表示
                 let dimensionText = '';
                 if (vehicle.length && vehicle.width && vehicle.height) {
@@ -1779,13 +1795,15 @@
                     vehicle.number,
                     dimensionText,
                     vehicle.capacity ? vehicle.capacity + 'm³' : '',
-                    vehicleSummary[vId]
+                    summary.count,
+                    parseFloat(summary.volume.toFixed(2))
                 ]);
-                vehicleTotal += vehicleSummary[vId];
+                vehicleTotal += summary.count;
+                vehicleVolumeTotal += summary.volume;
             }
         });
         
-        vehicleData.push(['', '', '', '合計', vehicleTotal]);
+        vehicleData.push(['', '', '', '合計', vehicleTotal, parseFloat(vehicleVolumeTotal.toFixed(2))]);
         
         const vehicleSheet = XLSX.utils.aoa_to_sheet(vehicleData);
         vehicleSheet['!cols'] = [
@@ -1793,7 +1811,8 @@
             { wch: 20 },
             { wch: 25 },
             { wch: 10 },
-            { wch: 12 }
+            { wch: 12 },
+            { wch: 15 }
         ];
         XLSX.utils.book_append_sheet(workbook, vehicleSheet, '車両別集計');
         
