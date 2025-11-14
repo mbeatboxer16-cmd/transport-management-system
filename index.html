@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -14,1068 +15,1765 @@
             box-sizing: border-box;
         }
 
+```
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+        position: relative;
+    }
+
+    .header h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .header p {
+        opacity: 0.9;
+        font-size: 14px;
+    }
+
+    .backup-status {
+        position: absolute;
+        top: 30px;
+        right: 30px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .backup-status:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .tabs {
+        display: flex;
+        background: #f8f9fa;
+        border-bottom: 2px solid #e9ecef;
+        overflow-x: auto;
+    }
+
+    .tab {
+        padding: 15px 25px;
+        cursor: pointer;
+        border: none;
+        background: none;
+        font-size: 15px;
+        color: #6c757d;
+        transition: all 0.3s;
+        white-space: nowrap;
+        position: relative;
+    }
+
+    .tab:hover {
+        background: #e9ecef;
+        color: #495057;
+    }
+
+    .tab.active {
+        color: #667eea;
+        font-weight: bold;
+    }
+
+    .tab.active::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+    }
+
+    .tab-content {
+        display: none;
+        padding: 30px;
+        animation: fadeIn 0.3s;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        color: #333;
+        border-left: 4px solid #667eea;
+        padding-left: 12px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #495057;
+        font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 12px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-group input.error {
+        border-color: #dc3545;
+        background-color: #fff5f5;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #06C755 0%, #00B900 100%);
+        color: white;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    thead {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    th {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    td {
+        font-size: 14px;
+    }
+
+    tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-buttons button {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+    .empty-state-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .stat-card h3 {
+        font-size: 14px;
+        opacity: 0.9;
+        margin-bottom: 10px;
+    }
+
+    .stat-card .stat-value {
+        font-size: 36px;
+        font-weight: bold;
+    }
+
+    .share-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #06C755 0%, #00B900 100%);
+        color: white;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(6, 199, 85, 0.4);
+        transition: all 0.3s;
+        z-index: 1000;
+    }
+
+    .share-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(6, 199, 85, 0.6);
+    }
+
+    @media print {
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            background: white;
+            padding: 0;
         }
 
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
+            box-shadow: none;
+            border-radius: 0;
         }
 
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            position: relative;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .header p {
-            opacity: 0.9;
-            font-size: 14px;
-        }
-
-        .backup-status {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .backup-status:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .tabs {
-            display: flex;
-            background: #f8f9fa;
-            border-bottom: 2px solid #e9ecef;
-            overflow-x: auto;
-        }
-
-        .tab {
-            padding: 15px 25px;
-            cursor: pointer;
-            border: none;
-            background: none;
-            font-size: 15px;
-            color: #6c757d;
-            transition: all 0.3s;
-            white-space: nowrap;
-            position: relative;
-        }
-
-        .tab:hover {
-            background: #e9ecef;
-            color: #495057;
-        }
-
-        .tab.active {
-            color: #667eea;
-            font-weight: bold;
-        }
-
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+        .header, .tabs, .btn-group, .share-button, .action-buttons, .filter-section {
+            display: none !important;
         }
 
         .tab-content {
-            display: none;
-            padding: 30px;
-            animation: fadeIn 0.3s;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            display: block !important;
+            padding: 0;
         }
 
         .card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: none;
+            page-break-inside: avoid;
+            margin-bottom: 0;
+            padding: 0;
         }
 
-        .card h2 {
-            font-size: 20px;
-            margin-bottom: 20px;
-            color: #333;
-            border-left: 4px solid #667eea;
-            padding-left: 12px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #495057;
-            font-size: 14px;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 12px;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .form-group input.error {
-            border-color: #dc3545;
-            background-color: #fff5f5;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-            transform: translateY(-2px);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #06C755 0%, #00B900 100%);
-            color: white;
-        }
-
-        .btn-success:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #c82333;
-            transform: translateY(-2px);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        thead {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        th {
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        td {
-            font-size: 14px;
-        }
-
-        tbody tr:hover {
-            background: #f8f9fa;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .action-buttons button {
-            padding: 6px 12px;
-            font-size: 13px;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6c757d;
-        }
-
-        .empty-state-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .stat-card h3 {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 10px;
-        }
-
-        .stat-card .stat-value {
-            font-size: 36px;
-            font-weight: bold;
-        }
-
-        .share-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #06C755 0%, #00B900 100%);
-            color: white;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(6, 199, 85, 0.4);
-            transition: all 0.3s;
-            z-index: 1000;
-        }
-
-        .share-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(6, 199, 85, 0.6);
-        }
-
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-
-            .container {
-                box-shadow: none;
-                border-radius: 0;
-            }
-
-            .header, .tabs, .btn-group, .share-button, .action-buttons {
-                display: none !important;
-            }
-
-            .tab-content {
-                display: block !important;
-                padding: 0;
-            }
-
-            .card {
-                box-shadow: none;
-                page-break-inside: avoid;
-            }
-
-            table {
-                page-break-inside: auto;
-            }
-
-            tr {
-                page-break-inside: avoid;
-                page-break-after: auto;
-            }
-
-            @page {
-                size: A4 landscape;
-                margin: 15mm;
-            }
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 0;
-            }
-
-            .container {
-                border-radius: 0;
-            }
-
-            .header {
-                padding: 20px;
-            }
-
-            .header h1 {
-                font-size: 22px;
-            }
-
-            .backup-status {
-                position: static;
-                margin-top: 15px;
-                display: inline-block;
-            }
-
-            .tab {
-                padding: 12px 15px;
-                font-size: 14px;
-            }
-
-            .tab-content {
-                padding: 15px;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            table {
-                font-size: 12px;
-            }
-
-            th, td {
-                padding: 8px 4px;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
-
-            .share-button {
-                bottom: 10px;
-                right: 10px;
-                width: 50px;
-                height: 50px;
-                font-size: 20px;
-            }
-        }
-
-        .filter-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .filter-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-
+        /* 印刷ヘッダー */
         .summary-table {
-            margin-top: 30px;
+            page-break-inside: avoid;
+            margin-bottom: 30px;
         }
 
         .summary-table h3 {
             font-size: 18px;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .total-row {
             font-weight: bold;
+            color: #000;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-left: 5px solid #667eea;
+        }
+
+        /* テーブルスタイル */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            page-break-inside: auto;
+            font-size: 11pt;
+        }
+
+        thead {
             background: #e9ecef !important;
+            color: #000 !important;
+            display: table-header-group; /* ページごとにヘッダーを繰り返し */
         }
 
-        .intro-section {
-            padding: 40px;
+        th {
+            padding: 10px 8px;
+            text-align: left;
+            border: 1px solid #000;
+            font-weight: bold;
+            font-size: 11pt;
+            background: #e9ecef !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        td {
+            padding: 8px;
+            border: 1px solid #333;
+            font-size: 10pt;
+            color: #000;
+        }
+
+        tbody tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        tbody tr:hover {
+            background: white;
+        }
+
+        /* 合計行 */
+        .total-row {
+            font-weight: bold !important;
+            background: #f8f9fa !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .total-row td {
+            font-weight: bold;
+            border-top: 3px double #000;
+        }
+
+        /* 集計結果のタイトル */
+        #summaryResults h2 {
+            display: none; /* 「集計結果」タイトルは非表示 */
+        }
+
+        /* 印刷時のページ設定 */
+        @page {
+            size: A4 portrait;
+            margin: 15mm 10mm;
+        }
+
+        /* ページ番号 */
+        @page {
+            @bottom-right {
+                content: counter(page) " / " counter(pages);
+            }
+        }
+
+        /* 印刷時の日時とタイトル */
+        #summaryContent::before {
+            content: "運搬台数・運搬量集計表";
+            display: block;
+            font-size: 20pt;
+            font-weight: bold;
             text-align: center;
+            margin-bottom: 10mm;
+            padding-bottom: 5mm;
+            border-bottom: 2px solid #000;
         }
 
-        .intro-section h2 {
-            font-size: 32px;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* 期間情報ヘッダーの印刷スタイル */
+        .print-header {
+            background: #f0f0f0 !important;
+            border: 2px solid #000 !important;
+            border-radius: 0 !important;
+            margin-bottom: 15mm !important;
+            page-break-after: avoid;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
-        .intro-section p {
-            font-size: 16px;
-            color: #6c757d;
-            margin-bottom: 15px;
-            line-height: 1.8;
+        .print-header h3 {
+            color: #000 !important;
+            font-size: 14pt !important;
         }
 
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 40px;
+        .print-header p {
+            color: #000 !important;
         }
 
-        .feature-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
+        /* 印刷日時を右上に表示 */
+        body::before {
+            content: "印刷日時: " attr(data-print-date);
+            display: block;
+            position: fixed;
+            top: 0;
+            right: 0;
+            font-size: 9pt;
+            color: #666;
         }
 
-        .feature-card-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
+        /* strongタグの強調 */
+        strong {
+            font-weight: bold;
+            color: #000;
         }
 
-        .feature-card h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
+        /* 空の状態は印刷しない */
+        .empty-state {
+            display: none;
         }
 
-        .feature-card p {
+        /* テーブル内の数値を右寄せ */
+        td:last-child,
+        td:nth-last-child(2) {
+            text-align: right;
+        }
+
+        /* カラー印刷対応 */
+        * {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding: 0;
+        }
+
+        .container {
+            border-radius: 0;
+        }
+
+        .header {
+            padding: 20px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+        }
+
+        .backup-status {
+            position: static;
+            margin-top: 15px;
+            display: inline-block;
+        }
+
+        .tab {
+            padding: 12px 15px;
             font-size: 14px;
-            opacity: 0.9;
         }
-    </style>
+
+        .tab-content {
+            padding: 15px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        th, td {
+            padding: 8px 4px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .share-button {
+            bottom: 10px;
+            right: 10px;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+        }
+    }
+
+    .filter-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .summary-table {
+        margin-top: 30px;
+    }
+
+    .summary-table h3 {
+        font-size: 18px;
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .total-row {
+        font-weight: bold;
+        background: #e9ecef !important;
+    }
+
+    .intro-section {
+        padding: 40px;
+        text-align: center;
+    }
+
+    .intro-section h2 {
+        font-size: 32px;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .intro-section p {
+        font-size: 16px;
+        color: #6c757d;
+        margin-bottom: 15px;
+        line-height: 1.8;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 40px;
+    }
+
+    .feature-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .feature-card-icon {
+        font-size: 48px;
+        margin-bottom: 15px;
+    }
+
+    .feature-card h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .feature-card p {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+</style>
+```
+
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>🚚 ダンプトラック運搬台数管理システム</h1>
-            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.1.0）</p>
+            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.1.1）</p>
             <div class="backup-status" id="backupStatus" onclick="manualBackup()">
                 💾 バックアップ準備中...
             </div>
         </div>
 
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('home')">🏠 ホーム</button>
-            <button class="tab" onclick="switchTab('projects')">🏗️ 工事マスター</button>
-            <button class="tab" onclick="switchTab('vehicles')">🚚 車両マスター</button>
-            <button class="tab" onclick="switchTab('records')">📝 運搬記録</button>
-            <button class="tab" onclick="switchTab('summary')">📊 集計・印刷</button>
-        </div>
+```
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('home')">🏠 ホーム</button>
+        <button class="tab" onclick="switchTab('projects')">🏗️ 工事マスター</button>
+        <button class="tab" onclick="switchTab('vehicles')">🚚 車両マスター</button>
+        <button class="tab" onclick="switchTab('records')">📝 運搬記録</button>
+        <button class="tab" onclick="switchTab('summary')">📊 集計・印刷</button>
+    </div>
 
-        <!-- ホームタブ -->
-        <div id="home" class="tab-content active">
-            <div class="intro-section">
-                <h2>ダンプトラック運搬台数管理システム</h2>
-                <p>建設現場でのダンプトラックの運搬台数を効率的に管理できるシステムです。</p>
-                <p>工事・車両のマスター管理、日々の運搬記録、工事別・車両別の集計機能を備えています。</p>
+    <!-- ホームタブ -->
+    <div id="home" class="tab-content active">
+        <div class="intro-section">
+            <h2>ダンプトラック運搬台数管理システム</h2>
+            <p>建設現場でのダンプトラックの運搬台数を効率的に管理できるシステムです。</p>
+            <p>工事・車両のマスター管理、日々の運搬記録、工事別・車両別の集計機能を備えています。</p>
 
-                <div class="feature-grid">
-                    <div class="feature-card">
-                        <div class="feature-card-icon">🏗️</div>
-                        <h3>工事マスター</h3>
-                        <p>工事名、工事箇所、請負者を登録・管理</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-card-icon">🚚</div>
-                        <h3>車両マスター</h3>
-                        <p>車種、車番、荷台寸法、容量を登録・管理</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-card-icon">📝</div>
-                        <h3>運搬記録</h3>
-                        <p>日付・工事・車両ごとの運搬台数を記録</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-card-icon">📊</div>
-                        <h3>集計・印刷</h3>
-                        <p>工事別・車両別に集計して印刷・Excel出力</p>
-                    </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-card-icon">🏗️</div>
+                    <h3>工事マスター</h3>
+                    <p>工事名、工事箇所、請負者を登録・管理</p>
                 </div>
-
-                <div class="stats-grid" style="margin-top: 40px;">
-                    <div class="stat-card">
-                        <h3>登録工事数</h3>
-                        <div class="stat-value" id="projectCount">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>登録車両数</h3>
-                        <div class="stat-value" id="vehicleCount">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>記録件数</h3>
-                        <div class="stat-value" id="recordCountStat">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>総運搬台数</h3>
-                        <div class="stat-value" id="totalCount">0</div>
-                    </div>
+                <div class="feature-card">
+                    <div class="feature-card-icon">🚚</div>
+                    <h3>車両マスター</h3>
+                    <p>車種、車番、荷台寸法、容量を登録・管理</p>
                 </div>
-
-                <div class="card" style="margin-top: 40px;">
-                    <h2>💾 データ管理</h2>
-                    <p style="color: #6c757d; margin-bottom: 20px;">データのバックアップ、復元、結合を行えます</p>
-                    <div class="btn-group">
-                        <button class="btn btn-primary" onclick="saveDataToFile()">
-                            💾 データを保存
-                        </button>
-                        <button class="btn btn-danger" onclick="loadDataFromFile('overwrite')">
-                            📥 データを上書き読み込み
-                        </button>
-                        <button class="btn btn-success" onclick="loadDataFromFile('merge')">
-                            🔗 データを結合読み込み
-                        </button>
-                    </div>
-                    <small style="display: block; margin-top: 15px; color: #6c757d;">
-                        <strong>💾 保存：</strong>現在のデータをファイルに保存します<br>
-                        <strong>📥 上書き：</strong>ファイルから読み込み、現在のデータを完全に置き換えます<br>
-                        <strong>🔗 結合：</strong>ファイルから読み込み、現在のデータに追加します（重複はスキップ）
-                    </small>
+                <div class="feature-card">
+                    <div class="feature-card-icon">📝</div>
+                    <h3>運搬記録</h3>
+                    <p>日付・工事・車両ごとの運搬台数を記録</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card-icon">📊</div>
+                    <h3>集計・印刷</h3>
+                    <p>工事別・車両別に集計して印刷・Excel出力</p>
                 </div>
             </div>
-        </div>
 
-        <!-- 工事マスタータブ -->
-        <div id="projects" class="tab-content">
-            <div class="card">
-                <h2>🏗️ 工事登録</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>工事名 *</label>
-                        <input type="text" id="projectName" placeholder="例：○○建設工事">
-                    </div>
-                    <div class="form-group">
-                        <label>工事箇所</label>
-                        <input type="text" id="projectLocation" placeholder="例：○○市△△町">
-                    </div>
-                    <div class="form-group">
-                        <label>請負者名称</label>
-                        <input type="text" id="projectContractor" placeholder="例：株式会社○○">
-                    </div>
+            <div class="stats-grid" style="margin-top: 40px;">
+                <div class="stat-card">
+                    <h3>登録工事数</h3>
+                    <div class="stat-value" id="projectCount">0</div>
                 </div>
+                <div class="stat-card">
+                    <h3>登録車両数</h3>
+                    <div class="stat-value" id="vehicleCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>記録件数</h3>
+                    <div class="stat-value" id="recordCountStat">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>総運搬台数</h3>
+                    <div class="stat-value" id="totalCount">0</div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 40px;">
+                <h2>💾 データ管理</h2>
+                <p style="color: #6c757d; margin-bottom: 20px;">データのバックアップ、復元、結合を行えます</p>
                 <div class="btn-group">
-                    <button class="btn btn-primary" onclick="addProject()">➕ 工事を追加</button>
-                    <button class="btn btn-secondary" onclick="clearProjectForm()">🔄 クリア</button>
+                    <button class="btn btn-primary" onclick="saveDataToFile()">
+                        💾 データを保存
+                    </button>
+                    <button class="btn btn-danger" onclick="loadDataFromFile('overwrite')">
+                        📥 データを上書き読み込み
+                    </button>
+                    <button class="btn btn-success" onclick="loadDataFromFile('merge')">
+                        🔗 データを結合読み込み
+                    </button>
                 </div>
-            </div>
-
-            <div class="card">
-                <h2>📋 登録済み工事一覧</h2>
-                <div id="projectList"></div>
-            </div>
-        </div>
-
-        <!-- 車両マスタータブ -->
-        <div id="vehicles" class="tab-content">
-            <div class="card">
-                <h2>🚚 車両登録</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>車種 *</label>
-                        <input type="text" id="vehicleType" placeholder="例：10tダンプ">
-                    </div>
-                    <div class="form-group">
-                        <label>車番 *</label>
-                        <input type="text" id="vehicleNumber" placeholder="例：品川500あ1234">
-                    </div>
-                </div>
-                <h3 style="font-size: 16px; margin: 20px 0 10px 0; color: #495057;">📐 荷台寸法</h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>長さ（m）</label>
-                        <input type="number" id="vehicleLength" step="0.1" placeholder="例：5.2" oninput="calculateCapacity()">
-                    </div>
-                    <div class="form-group">
-                        <label>幅（m）</label>
-                        <input type="number" id="vehicleWidth" step="0.1" placeholder="例：2.3" oninput="calculateCapacity()">
-                    </div>
-                    <div class="form-group">
-                        <label>高さ（m）</label>
-                        <input type="number" id="vehicleHeight" step="0.1" placeholder="例：0.6" oninput="calculateCapacity()">
-                    </div>
-                    <div class="form-group">
-                        <label>容量（m³）自動計算</label>
-                        <input type="text" id="vehicleCapacity" readonly style="background: #f8f9fa; cursor: not-allowed;" placeholder="自動計算されます">
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="addVehicle()">➕ 車両を追加</button>
-                    <button class="btn btn-secondary" onclick="clearVehicleForm()">🔄 クリア</button>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>📋 登録済み車両一覧</h2>
-                <div id="vehicleList"></div>
-            </div>
-        </div>
-
-        <!-- 運搬記録タブ -->
-        <div id="records" class="tab-content">
-            <div class="card">
-                <h2>📝 運搬記録入力</h2>
-                <div id="recordFormMessage" style="display: none; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
-                    <strong>⚠️ 先に登録が必要です：</strong>
-                    <ul style="margin: 10px 0 0 20px;">
-                        <li id="needProjectMessage" style="display: none;">「工事マスター」タブで工事を登録してください</li>
-                        <li id="needVehicleMessage" style="display: none;">「車両マスター」タブで車両を登録してください</li>
-                    </ul>
-                </div>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>日付 *</label>
-                        <input type="date" id="recordDate">
-                    </div>
-                    <div class="form-group">
-                        <label>工事 *</label>
-                        <select id="recordProject">
-                            <option value="">選択してください</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>車両 *</label>
-                        <select id="recordVehicle">
-                            <option value="">選択してください</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>運搬台数 *</label>
-                        <input type="number" id="recordCount" min="1" step="1" placeholder="例：15" inputmode="numeric" pattern="[0-9]*">
-                        <small style="color: #6c757d; font-size: 12px; display: block; margin-top: 5px;">※ 1以上の整数で入力（例：10）</small>
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="addRecord()">➕ 記録を追加</button>
-                    <button class="btn btn-secondary" onclick="clearRecordForm()">🔄 クリア</button>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>📋 運搬記録一覧</h2>
-                <div id="recordList"></div>
-            </div>
-        </div>
-
-        <!-- 集計・印刷タブ -->
-        <div id="summary" class="tab-content">
-            <div class="card">
-                <h2>📊 集計条件設定</h2>
-                <div class="filter-section">
-                    <div class="filter-grid">
-                        <div class="form-group">
-                            <label>開始日</label>
-                            <input type="date" id="summaryStartDate">
-                        </div>
-                        <div class="form-group">
-                            <label>終了日</label>
-                            <input type="date" id="summaryEndDate">
-                        </div>
-                        <div class="form-group">
-                            <label>工事</label>
-                            <select id="summaryProject">
-                                <option value="">すべて</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>車両</label>
-                            <select id="summaryVehicle">
-                                <option value="">すべて</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="generateSummary()">📊 集計実行</button>
-                    <button class="btn btn-success" onclick="exportSummaryToExcel()">📄 Excel出力</button>
-                    <button class="btn btn-secondary" onclick="window.print()">🖨️ 印刷</button>
-                </div>
-            </div>
-
-            <div class="card" id="summaryResults" style="display: none;">
-                <h2>📈 集計結果</h2>
-                <div id="summaryContent"></div>
+                <small style="display: block; margin-top: 15px; color: #6c757d;">
+                    <strong>💾 保存：</strong>現在のデータをファイルに保存します<br>
+                    <strong>📥 上書き：</strong>ファイルから読み込み、現在のデータを完全に置き換えます<br>
+                    <strong>🔗 結合：</strong>ファイルから読み込み、現在のデータに追加します（重複はスキップ）
+                </small>
             </div>
         </div>
     </div>
 
-    <button class="share-button" onclick="shareData()" title="データを共有">📤</button>
+    <!-- 工事マスタータブ -->
+    <div id="projects" class="tab-content">
+        <div class="card">
+            <h2>🏗️ 工事登録</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>工事名 *</label>
+                    <input type="text" id="projectName" placeholder="例：○○建設工事">
+                </div>
+                <div class="form-group">
+                    <label>工事箇所</label>
+                    <input type="text" id="projectLocation" placeholder="例：○○市△△町">
+                </div>
+                <div class="form-group">
+                    <label>請負者名称</label>
+                    <input type="text" id="projectContractor" placeholder="例：株式会社○○">
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addProject()">➕ 工事を追加</button>
+                <button class="btn btn-secondary" onclick="clearProjectForm()">🔄 クリア</button>
+            </div>
+        </div>
 
-    <script>
-        // データ構造
-        let projects = [];
-        let vehicles = [];
-        let records = [];
-        let editingProjectId = null;
-        let editingVehicleId = null;
-        let editingRecordId = null;
+        <div class="card">
+            <h2>📋 登録済み工事一覧</h2>
+            <div id="projectList"></div>
+        </div>
+    </div>
 
-        // 初期化
-        document.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            updateAllSelects();
+    <!-- 車両マスタータブ -->
+    <div id="vehicles" class="tab-content">
+        <div class="card">
+            <h2>🚚 車両登録</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>車種 *</label>
+                    <input type="text" id="vehicleType" placeholder="例：10tダンプ">
+                </div>
+                <div class="form-group">
+                    <label>車番 *</label>
+                    <input type="text" id="vehicleNumber" placeholder="例：品川500あ1234">
+                </div>
+            </div>
+            <h3 style="font-size: 16px; margin: 20px 0 10px 0; color: #495057;">📐 荷台寸法</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>長さ（m）</label>
+                    <input type="number" id="vehicleLength" step="0.1" placeholder="例：5.2" oninput="calculateCapacity()">
+                </div>
+                <div class="form-group">
+                    <label>幅（m）</label>
+                    <input type="number" id="vehicleWidth" step="0.1" placeholder="例：2.3" oninput="calculateCapacity()">
+                </div>
+                <div class="form-group">
+                    <label>高さ（m）</label>
+                    <input type="number" id="vehicleHeight" step="0.1" placeholder="例：0.6" oninput="calculateCapacity()">
+                </div>
+                <div class="form-group">
+                    <label>容量（m³）自動計算</label>
+                    <input type="text" id="vehicleCapacity" readonly style="background: #f8f9fa; cursor: not-allowed;" placeholder="自動計算されます">
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addVehicle()">➕ 車両を追加</button>
+                <button class="btn btn-secondary" onclick="clearVehicleForm()">🔄 クリア</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📋 登録済み車両一覧</h2>
+            <div id="vehicleList"></div>
+        </div>
+    </div>
+
+    <!-- 運搬記録タブ -->
+    <div id="records" class="tab-content">
+        <div class="card">
+            <h2>📝 運搬記録入力</h2>
+            <div id="recordFormMessage" style="display: none; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <strong>⚠️ 先に登録が必要です：</strong>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li id="needProjectMessage" style="display: none;">「工事マスター」タブで工事を登録してください</li>
+                    <li id="needVehicleMessage" style="display: none;">「車両マスター」タブで車両を登録してください</li>
+                </ul>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>日付 *</label>
+                    <input type="date" id="recordDate">
+                </div>
+                <div class="form-group">
+                    <label>工事 *</label>
+                    <select id="recordProject">
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>車両 *</label>
+                    <select id="recordVehicle">
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>運搬台数 *</label>
+                    <input type="number" id="recordCount" min="1" step="1" placeholder="例：15" inputmode="numeric" pattern="[0-9]*">
+                    <small style="color: #6c757d; font-size: 12px; display: block; margin-top: 5px;">※ 1以上の整数で入力（例：10）</small>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addRecord()">➕ 記録を追加</button>
+                <button class="btn btn-secondary" onclick="clearRecordForm()">🔄 クリア</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📋 運搬記録一覧</h2>
+            <div id="recordList"></div>
+        </div>
+    </div>
+
+    <!-- 集計・印刷タブ -->
+    <div id="summary" class="tab-content">
+        <div class="card">
+            <h2>📊 集計条件設定</h2>
+            <div class="filter-section">
+                <div class="filter-grid">
+                    <div class="form-group">
+                        <label>開始日</label>
+                        <input type="date" id="summaryStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label>終了日</label>
+                        <input type="date" id="summaryEndDate">
+                    </div>
+                    <div class="form-group">
+                        <label>工事</label>
+                        <select id="summaryProject">
+                            <option value="">すべて</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>車両</label>
+                        <select id="summaryVehicle">
+                            <option value="">すべて</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="generateSummary()">📊 集計実行</button>
+                <button class="btn btn-success" onclick="exportSummaryToExcel()">📄 Excel出力</button>
+                <button class="btn btn-secondary" onclick="window.print()">🖨️ 印刷</button>
+            </div>
+        </div>
+
+        <div class="card" id="summaryResults" style="display: none;">
+            <h2>📈 集計結果</h2>
+            <div id="summaryContent"></div>
+        </div>
+    </div>
+</div>
+
+<button class="share-button" onclick="shareData()" title="データを共有">📤</button>
+
+<script>
+    // データ構造
+    let projects = [];
+    let vehicles = [];
+    let records = [];
+    let editingProjectId = null;
+    let editingVehicleId = null;
+    let editingRecordId = null;
+
+    // 初期化
+    document.addEventListener('DOMContentLoaded', () => {
+        loadData();
+        updateAllSelects();
+        updateStats();
+        initAutoBackup();
+        registerServiceWorker();
+        
+        // 今日の日付をセット
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('recordDate').value = today;
+        document.getElementById('summaryEndDate').value = today;
+        
+        // 30日前の日付をセット
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        document.getElementById('summaryStartDate').value = thirtyDaysAgo.toISOString().split('T')[0];
+    });
+
+    // Service Worker登録
+    function registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(() => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed:', err));
+        }
+    }
+
+    // タブ切り替え
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        event.target.classList.add('active');
+        document.getElementById(tabName).classList.add('active');
+        
+        if (tabName === 'home') {
             updateStats();
-            initAutoBackup();
-            registerServiceWorker();
-            
-            // 今日の日付をセット
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('recordDate').value = today;
-            document.getElementById('summaryEndDate').value = today;
-            
-            // 30日前の日付をセット
-            const thirtyDaysAgo = new Date();
-            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            document.getElementById('summaryStartDate').value = thirtyDaysAgo.toISOString().split('T')[0];
-        });
-
-        // Service Worker登録
-        function registerServiceWorker() {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(() => console.log('Service Worker registered'))
-                    .catch(err => console.log('Service Worker registration failed:', err));
-            }
         }
-
-        // タブ切り替え
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            event.target.classList.add('active');
-            document.getElementById(tabName).classList.add('active');
-            
-            if (tabName === 'home') {
-                updateStats();
-            }
-            
-            // 運搬記録タブを開いたときのチェック
-            if (tabName === 'records') {
-                if (projects.length === 0 || vehicles.length === 0) {
-                    let message = '⚠️ 運搬記録を入力する前に、以下を登録してください：\n\n';
-                    if (projects.length === 0) {
-                        message += '• 工事マスター（工事の登録）\n';
-                    }
-                    if (vehicles.length === 0) {
-                        message += '• 車両マスター（車両の登録）\n';
-                    }
-                    setTimeout(() => alert(message), 100);
+        
+        // 運搬記録タブを開いたときのチェック
+        if (tabName === 'records') {
+            if (projects.length === 0 || vehicles.length === 0) {
+                let message = '⚠️ 運搬記録を入力する前に、以下を登録してください：\n\n';
+                if (projects.length === 0) {
+                    message += '• 工事マスター（工事の登録）\n';
                 }
+                if (vehicles.length === 0) {
+                    message += '• 車両マスター（車両の登録）\n';
+                }
+                setTimeout(() => alert(message), 100);
             }
         }
+    }
 
-        // データ保存
-        function saveData() {
-            try {
-                console.log('データ保存: 工事', projects.length, '車両', vehicles.length, '記録', records.length);
-                localStorage.setItem('dumpTruckProjects', JSON.stringify(projects));
-                localStorage.setItem('dumpTruckVehicles', JSON.stringify(vehicles));
-                localStorage.setItem('dumpTruckRecords', JSON.stringify(records));
-                console.log('データ保存成功');
-            } catch (error) {
-                console.error('データ保存エラー:', error);
-                alert('⚠️ データの保存に失敗しました。\nブラウザのストレージ容量を確認してください。');
-            }
+    // データ保存
+    function saveData() {
+        try {
+            console.log('データ保存: 工事', projects.length, '車両', vehicles.length, '記録', records.length);
+            localStorage.setItem('dumpTruckProjects', JSON.stringify(projects));
+            localStorage.setItem('dumpTruckVehicles', JSON.stringify(vehicles));
+            localStorage.setItem('dumpTruckRecords', JSON.stringify(records));
+            console.log('データ保存成功');
+        } catch (error) {
+            console.error('データ保存エラー:', error);
+            alert('⚠️ データの保存に失敗しました。\nブラウザのストレージ容量を確認してください。');
         }
+    }
 
-        // データ読み込み
-        function loadData() {
-            try {
-                console.log('データ読み込み開始');
-                projects = JSON.parse(localStorage.getItem('dumpTruckProjects')) || [];
-                vehicles = JSON.parse(localStorage.getItem('dumpTruckVehicles')) || [];
-                records = JSON.parse(localStorage.getItem('dumpTruckRecords')) || [];
-                console.log('データ読み込み完了: 工事', projects.length, '車両', vehicles.length, '記録', records.length);
-                
-                renderProjectList();
-                renderVehicleList();
-                renderRecordList();
-            } catch (error) {
-                console.error('データ読み込みエラー:', error);
-                alert('⚠️ データの読み込みに失敗しました。\nブラウザのコンソール（F12）を確認してください。');
-                // エラー時は空配列で初期化
-                projects = [];
-                vehicles = [];
-                records = [];
-            }
-        }
-
-        // 工事追加・更新
-        function addProject() {
-            const name = document.getElementById('projectName').value.trim();
-            const location = document.getElementById('projectLocation').value.trim();
-            const contractor = document.getElementById('projectContractor').value.trim();
+    // データ読み込み
+    function loadData() {
+        try {
+            console.log('データ読み込み開始');
+            projects = JSON.parse(localStorage.getItem('dumpTruckProjects')) || [];
+            vehicles = JSON.parse(localStorage.getItem('dumpTruckVehicles')) || [];
+            records = JSON.parse(localStorage.getItem('dumpTruckRecords')) || [];
+            console.log('データ読み込み完了: 工事', projects.length, '車両', vehicles.length, '記録', records.length);
             
-            if (!name) {
-                alert('❌ 工事名は必須です。');
+            renderProjectList();
+            renderVehicleList();
+            renderRecordList();
+        } catch (error) {
+            console.error('データ読み込みエラー:', error);
+            alert('⚠️ データの読み込みに失敗しました。\nブラウザのコンソール（F12）を確認してください。');
+            // エラー時は空配列で初期化
+            projects = [];
+            vehicles = [];
+            records = [];
+        }
+    }
+
+    // 工事追加・更新
+    function addProject() {
+        const name = document.getElementById('projectName').value.trim();
+        const location = document.getElementById('projectLocation').value.trim();
+        const contractor = document.getElementById('projectContractor').value.trim();
+        
+        if (!name) {
+            alert('❌ 工事名は必須です。');
+            return;
+        }
+        
+        if (editingProjectId) {
+            const project = projects.find(p => p.id === editingProjectId);
+            project.name = name;
+            project.location = location;
+            project.contractor = contractor;
+            editingProjectId = null;
+        } else {
+            projects.push({
+                id: Date.now().toString(),
+                name,
+                location,
+                contractor
+            });
+        }
+        
+        saveData();
+        renderProjectList();
+        updateAllSelects();
+        clearProjectForm();
+        alert('✅ 工事を保存しました！');
+    }
+
+    // 工事編集
+    function editProject(id) {
+        const project = projects.find(p => p.id === id);
+        document.getElementById('projectName').value = project.name;
+        document.getElementById('projectLocation').value = project.location;
+        document.getElementById('projectContractor').value = project.contractor;
+        editingProjectId = id;
+        
+        document.querySelector('.tab[onclick*="projects"]').click();
+        window.scrollTo(0, 0);
+    }
+
+    // 工事削除
+    function deleteProject(id) {
+        if (!confirm('この工事を削除しますか？\n関連する運搬記録も削除されます。')) return;
+        
+        projects = projects.filter(p => p.id !== id);
+        records = records.filter(r => r.projectId !== id);
+        saveData();
+        renderProjectList();
+        renderRecordList();
+        updateAllSelects();
+        updateStats();
+    }
+
+    // 工事リスト表示
+    function renderProjectList() {
+        const container = document.getElementById('projectList');
+        
+        if (projects.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">🏗️</div>
+                    <p>まだ工事が登録されていません。</p>
+                    <p>上のフォームから工事を登録してください。</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '<table><thead><tr><th>工事名</th><th>工事箇所</th><th>請負者</th><th>操作</th></tr></thead><tbody>';
+        
+        projects.forEach(project => {
+            html += `
+                <tr>
+                    <td><strong>${project.name}</strong></td>
+                    <td>${project.location || '-'}</td>
+                    <td>${project.contractor || '-'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary" onclick="editProject('${project.id}')">✏️ 編集</button>
+                            <button class="btn btn-danger" onclick="deleteProject('${project.id}')">🗑️ 削除</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    // 容量自動計算
+    function calculateCapacity() {
+        const length = parseFloat(document.getElementById('vehicleLength').value) || 0;
+        const width = parseFloat(document.getElementById('vehicleWidth').value) || 0;
+        const height = parseFloat(document.getElementById('vehicleHeight').value) || 0;
+        
+        if (length > 0 && width > 0 && height > 0) {
+            const capacity = (length * width * height).toFixed(2);
+            document.getElementById('vehicleCapacity').value = capacity;
+        } else {
+            document.getElementById('vehicleCapacity').value = '';
+        }
+    }
+
+    // 車両追加・更新
+    function addVehicle() {
+        const type = document.getElementById('vehicleType').value.trim();
+        const number = document.getElementById('vehicleNumber').value.trim();
+        const length = parseFloat(document.getElementById('vehicleLength').value) || null;
+        const width = parseFloat(document.getElementById('vehicleWidth').value) || null;
+        const height = parseFloat(document.getElementById('vehicleHeight').value) || null;
+        const capacity = document.getElementById('vehicleCapacity').value;
+        
+        if (!type || !number) {
+            alert('❌ 車種と車番は必須です。');
+            return;
+        }
+        
+        if (editingVehicleId) {
+            const vehicle = vehicles.find(v => v.id === editingVehicleId);
+            vehicle.type = type;
+            vehicle.number = number;
+            vehicle.length = length;
+            vehicle.width = width;
+            vehicle.height = height;
+            vehicle.capacity = capacity ? parseFloat(capacity) : null;
+            editingVehicleId = null;
+        } else {
+            vehicles.push({
+                id: Date.now().toString(),
+                type,
+                number,
+                length,
+                width,
+                height,
+                capacity: capacity ? parseFloat(capacity) : null
+            });
+        }
+        
+        saveData();
+        renderVehicleList();
+        updateAllSelects();
+        clearVehicleForm();
+        alert('✅ 車両を保存しました！');
+    }
+
+    // 車両編集
+    function editVehicle(id) {
+        const vehicle = vehicles.find(v => v.id === id);
+        document.getElementById('vehicleType').value = vehicle.type;
+        document.getElementById('vehicleNumber').value = vehicle.number;
+        document.getElementById('vehicleLength').value = vehicle.length || '';
+        document.getElementById('vehicleWidth').value = vehicle.width || '';
+        document.getElementById('vehicleHeight').value = vehicle.height || '';
+        document.getElementById('vehicleCapacity').value = vehicle.capacity || '';
+        editingVehicleId = id;
+        
+        document.querySelector('.tab[onclick*="vehicles"]').click();
+        window.scrollTo(0, 0);
+    }
+
+    // 車両削除
+    function deleteVehicle(id) {
+        if (!confirm('この車両を削除しますか？\n関連する運搬記録も削除されます。')) return;
+        
+        vehicles = vehicles.filter(v => v.id !== id);
+        records = records.filter(r => r.vehicleId !== id);
+        saveData();
+        renderVehicleList();
+        renderRecordList();
+        updateAllSelects();
+        updateStats();
+    }
+
+    // 車両リスト表示
+    function renderVehicleList() {
+        const container = document.getElementById('vehicleList');
+        
+        if (vehicles.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">🚚</div>
+                    <p>まだ車両が登録されていません。</p>
+                    <p>上のフォームから車両を登録してください。</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '<table><thead><tr><th>車種</th><th>車番</th><th>荷台寸法</th><th>容量</th><th>操作</th></tr></thead><tbody>';
+        
+        vehicles.forEach(vehicle => {
+            // 寸法表示
+            let dimensionText = '-';
+            if (vehicle.length && vehicle.width && vehicle.height) {
+                dimensionText = `${vehicle.length}m × ${vehicle.width}m × ${vehicle.height}m`;
+            } else if (vehicle.bodySize) {
+                // 旧データ対応
+                dimensionText = vehicle.bodySize;
+            }
+            
+            html += `
+                <tr>
+                    <td><strong>${vehicle.type}</strong></td>
+                    <td>${vehicle.number}</td>
+                    <td>${dimensionText}</td>
+                    <td>${vehicle.capacity ? vehicle.capacity + 'm³' : '-'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary" onclick="editVehicle('${vehicle.id}')">✏️ 編集</button>
+                            <button class="btn btn-danger" onclick="deleteVehicle('${vehicle.id}')">🗑️ 削除</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    // 運搬記録追加・更新（改善版）
+    function addRecord() {
+        try {
+            console.log('=== 運搬記録追加開始 ===');
+            
+            // 要素の取得
+            const dateInput = document.getElementById('recordDate');
+            const projectSelect = document.getElementById('recordProject');
+            const vehicleSelect = document.getElementById('recordVehicle');
+            const countInput = document.getElementById('recordCount');
+            
+            // エラースタイルをクリア
+            if (countInput) countInput.classList.remove('error');
+            
+            // 値の取得
+            const date = dateInput ? dateInput.value : '';
+            const projectId = projectSelect ? projectSelect.value : '';
+            const vehicleId = vehicleSelect ? vehicleSelect.value : '';
+            const countValue = (countInput && countInput.value != null) ? String(countInput.value).trim() : '';
+            
+            console.log('取得した値:', { date, projectId, vehicleId, countValue });
+            
+            // 日付チェック
+            if (!date) {
+                alert('❌ 日付を入力してください。');
+                if (dateInput) dateInput.focus();
                 return;
             }
             
-            if (editingProjectId) {
-                const project = projects.find(p => p.id === editingProjectId);
-                project.name = name;
-                project.location = location;
-                project.contractor = contractor;
-                editingProjectId = null;
-            } else {
-                projects.push({
-                    id: Date.now().toString(),
-                    name,
-                    location,
-                    contractor
-                });
+            // 工事チェック
+            if (!projectId || projectId === '') {
+                alert('❌ 工事を選択してください。\n\n先に「工事マスター」タブで工事を登録してください。');
+                if (projectSelect) projectSelect.focus();
+                return;
             }
             
-            saveData();
-            renderProjectList();
-            updateAllSelects();
-            clearProjectForm();
-            alert('✅ 工事を保存しました！');
-        }
-
-        // 工事編集
-        function editProject(id) {
-            const project = projects.find(p => p.id === id);
-            document.getElementById('projectName').value = project.name;
-            document.getElementById('projectLocation').value = project.location;
-            document.getElementById('projectContractor').value = project.contractor;
-            editingProjectId = id;
+            // 車両チェック
+            if (!vehicleId || vehicleId === '') {
+                alert('❌ 車両を選択してください。\n\n先に「車両マスター」タブで車両を登録してください。');
+                if (vehicleSelect) vehicleSelect.focus();
+                return;
+            }
             
-            document.querySelector('.tab[onclick*="projects"]').click();
-            window.scrollTo(0, 0);
-        }
-
-        // 工事削除
-        function deleteProject(id) {
-            if (!confirm('この工事を削除しますか？\n関連する運搬記録も削除されます。')) return;
+            // 運搬台数チェック
+            if (!countValue || countValue === '') {
+                alert('❌ 運搬台数を入力してください。\n\n例：10');
+                if (countInput) {
+                    countInput.classList.add('error');
+                    countInput.focus();
+                }
+                return;
+            }
             
-            projects = projects.filter(p => p.id !== id);
-            records = records.filter(r => r.projectId !== id);
+            // 数値に変換
+            const count = parseInt(countValue, 10);
+            console.log('変換後の運搬台数:', count, 'type:', typeof count);
+            console.log('変換後の運搬台数:', count, 'type:', typeof count);
+            
+            // 数値の妥当性チェック
+            if (isNaN(count)) {
+                alert('❌ 運搬台数は数値で入力してください。\n\n入力された値: ' + countValue + '\n正しい例: 10');
+                if (countInput) {
+                    countInput.classList.add('error');
+                    countInput.value = '';
+                    countInput.focus();
+                }
+                return;
+            }
+            
+            if (count < 1) {
+                alert('❌ 運搬台数は1以上で入力してください。\n\n入力された値: ' + count);
+                if (countInput) {
+                    countInput.classList.add('error');
+                    countInput.value = '';
+                    countInput.focus();
+                }
+                return;
+            }
+            
+            if (count > 9999) {
+                alert('❌ 運搬台数は9999以下で入力してください。\n\n入力された値: ' + count);
+                if (countInput) {
+                    countInput.classList.add('error');
+                    countInput.focus();
+                }
+                return;
+            }
+            
+            // 小数チェック
+            if (countValue.includes('.') || countValue.includes(',')) {
+                alert('❌ 運搬台数は整数で入力してください（小数点は使用できません）。\n\n入力された値: ' + countValue + '\n正しい例: 10');
+                if (countInput) {
+                    countInput.classList.add('error');
+                    countInput.value = '';
+                    countInput.focus();
+                }
+                return;
+            }
+            
+            console.log('✓ すべてのバリデーション通過');
+            console.log('13. ✅ すべてのバリデーション通過！');
+            
+            // データの保存
+            console.log('14. データ保存開始 - editingRecordId:', editingRecordId);
+            if (editingRecordId) {
+                console.log('15. 編集モード:', editingRecordId);
+                const record = records.find(r => r.id === editingRecordId);
+                if (record) {
+                    record.date = date;
+                    record.projectId = projectId;
+                    record.vehicleId = vehicleId;
+                    record.count = count;
+                    console.log('16. 記録を更新:', record);
+                } else {
+                    console.error('❌ 編集対象の記録が見つかりません');
+                    alert('❌ 編集対象の記録が見つかりません。');
+                    return;
+                }
+                editingRecordId = null;
+            } else {
+                console.log('15. 新規追加モード');
+                const newRecord = {
+                    id: Date.now().toString(),
+                    date: date,
+                    projectId: projectId,
+                    vehicleId: vehicleId,
+                    count: count
+                };
+                console.log('16. 新しい記録を作成:', JSON.stringify(newRecord));
+                records.push(newRecord);
+                console.log('17. 配列に追加完了 - 全記録数:', records.length);
+                console.log('18. 全記録内容:', JSON.stringify(records));
+            }
+            
+            // データ保存
+            console.log('19. localStorage保存開始...');
             saveData();
-            renderProjectList();
+            console.log('20. ✓ localStorage保存完了');
+            
+            // リスト再描画
+            console.log('21. リスト再描画開始...');
             renderRecordList();
-            updateAllSelects();
-            updateStats();
-        }
-
-        // 工事リスト表示
-        function renderProjectList() {
-            const container = document.getElementById('projectList');
+            console.log('22. ✓ リスト再描画完了');
             
-            if (projects.length === 0) {
+            // フォームクリア
+            console.log('23. フォームクリア開始...');
+            clearRecordForm();
+            console.log('24. ✓ フォームクリア完了');
+            
+            // 統計更新
+            console.log('25. 統計更新開始...');
+            updateStats();
+            console.log('26. ✓ 統計更新完了');
+            
+            console.log('27. === ✅ 運搬記録追加成功！全処理完了 ===');
+            alert('✅ 運搬記録を保存しました！');
+            
+        } catch (error) {
+            console.error('=== ❌ エラー発生 ===');
+            console.error('エラー:', error);
+            console.error('スタック:', error.stack);
+            alert('❌ エラーが発生しました。\n\nエラー内容: ' + error.message + '\n\nブラウザのコンソール（F12）を開いて詳細を確認してください。');
+        }
+    }
+
+    // 運搬記録編集
+    function editRecord(id) {
+        const record = records.find(r => r.id === id);
+        document.getElementById('recordDate').value = record.date;
+        document.getElementById('recordProject').value = record.projectId;
+        document.getElementById('recordVehicle').value = record.vehicleId;
+        document.getElementById('recordCount').value = record.count;
+        editingRecordId = id;
+        
+        document.querySelector('.tab[onclick*="records"]').click();
+        window.scrollTo(0, 0);
+    }
+
+    // 運搬記録削除
+    function deleteRecord(id) {
+        if (!confirm('この運搬記録を削除しますか？')) return;
+        
+        records = records.filter(r => r.id !== id);
+        saveData();
+        renderRecordList();
+        updateStats();
+    }
+
+    // 運搬記録リスト表示
+    function renderRecordList() {
+        try {
+            console.log('運搬記録リスト表示開始, 記録数:', records.length);
+            const container = document.getElementById('recordList');
+            
+            if (!container) {
+                console.error('recordListコンテナが見つかりません');
+                return;
+            }
+            
+            if (records.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">🏗️</div>
-                        <p>まだ工事が登録されていません。</p>
-                        <p>上のフォームから工事を登録してください。</p>
+                        <div class="empty-state-icon">📝</div>
+                        <p>まだ運搬記録がありません。</p>
+                        <p>上のフォームから運搬記録を入力してください。</p>
                     </div>
                 `;
                 return;
             }
             
-            let html = '<table><thead><tr><th>工事名</th><th>工事箇所</th><th>請負者</th><th>操作</th></tr></thead><tbody>';
+            // 日付降順でソート
+            const sortedRecords = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
+            console.log('ソート済み記録数:', sortedRecords.length);
             
-            projects.forEach(project => {
-                html += `
-                    <tr>
-                        <td><strong>${project.name}</strong></td>
-                        <td>${project.location || '-'}</td>
-                        <td>${project.contractor || '-'}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn btn-secondary" onclick="editProject('${project.id}')">✏️ 編集</button>
-                                <button class="btn btn-danger" onclick="deleteProject('${project.id}')">🗑️ 削除</button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
+            let html = '<table><thead><tr><th>日付</th><th>工事</th><th>車両</th><th>車番</th><th>運搬台数</th><th>操作</th></tr></thead><tbody>';
+            
+            sortedRecords.forEach((record, index) => {
+                try {
+                    const project = projects.find(p => p.id === record.projectId);
+                    const vehicle = vehicles.find(v => v.id === record.vehicleId);
+                    
+                    html += `
+                        <tr>
+                            <td>${record.date}</td>
+                            <td>${project ? project.name : '（削除済み）'}</td>
+                            <td>${vehicle ? vehicle.type : '（削除済み）'}</td>
+                            <td>${vehicle ? vehicle.number : '-'}</td>
+                            <td><strong>${record.count}台</strong></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-secondary" onclick="editRecord('${record.id}')">✏️ 編集</button>
+                                    <button class="btn btn-danger" onclick="deleteRecord('${record.id}')">🗑️ 削除</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                } catch (rowError) {
+                    console.error(`記録行${index}の表示でエラー:`, rowError, record);
+                }
             });
             
             html += '</tbody></table>';
             container.innerHTML = html;
-        }
-
-        // 容量自動計算
-        function calculateCapacity() {
-            const length = parseFloat(document.getElementById('vehicleLength').value) || 0;
-            const width = parseFloat(document.getElementById('vehicleWidth').value) || 0;
-            const height = parseFloat(document.getElementById('vehicleHeight').value) || 0;
-            
-            if (length > 0 && width > 0 && height > 0) {
-                const capacity = (length * width * height).toFixed(2);
-                document.getElementById('vehicleCapacity').value = capacity;
-            } else {
-                document.getElementById('vehicleCapacity').value = '';
-            }
-        }
-
-        // 車両追加・更新
-        function addVehicle() {
-            const type = document.getElementById('vehicleType').value.trim();
-            const number = document.getElementById('vehicleNumber').value.trim();
-            const length = parseFloat(document.getElementById('vehicleLength').value) || null;
-            const width = parseFloat(document.getElementById('vehicleWidth').value) || null;
-            const height = parseFloat(document.getElementById('vehicleHeight').value) || null;
-            const capacity = document.getElementById('vehicleCapacity').value;
-            
-            if (!type || !number) {
-                alert('❌ 車種と車番は必須です。');
-                return;
-            }
-            
-            if (editingVehicleId) {
-                const vehicle = vehicles.find(v => v.id === editingVehicleId);
-                vehicle.type = type;
-                vehicle.number = number;
-                vehicle.length = length;
-                vehicle.width = width;
-                vehicle.height = height;
-                vehicle.capacity = capacity ? parseFloat(capacity) : null;
-                editingVehicleId = null;
-            } else {
-                vehicles.push({
-                    id: Date.now().toString(),
-                    type,
-                    number,
-                    length,
-                    width,
-                    height,
-                    capacity: capacity ? parseFloat(capacity) : null
-                });
-            }
-            
-            saveData();
-            renderVehicleList();
-            updateAllSelects();
-            clearVehicleForm();
-            alert('✅ 車両を保存しました！');
-        }
-
-        // 車両編集
-        function editVehicle(id) {
-            const vehicle = vehicles.find(v => v.id === id);
-            document.getElementById('vehicleType').value = vehicle.type;
-            document.getElementById('vehicleNumber').value = vehicle.number;
-            document.getElementById('vehicleLength').value = vehicle.length || '';
-            document.getElementById('vehicleWidth').value = vehicle.width || '';
-            document.getElementById('vehicleHeight').value = vehicle.height || '';
-            document.getElementById('vehicleCapacity').value = vehicle.capacity || '';
-            editingVehicleId = id;
-            
-            document.querySelector('.tab[onclick*="vehicles"]').click();
-            window.scrollTo(0, 0);
-        }
-
-        // 車両削除
-        function deleteVehicle(id) {
-            if (!confirm('この車両を削除しますか？\n関連する運搬記録も削除されます。')) return;
-            
-            vehicles = vehicles.filter(v => v.id !== id);
-            records = records.filter(r => r.vehicleId !== id);
-            saveData();
-            renderVehicleList();
-            renderRecordList();
-            updateAllSelects();
-            updateStats();
-        }
-
-        // 車両リスト表示
-        function renderVehicleList() {
-            const container = document.getElementById('vehicleList');
-            
-            if (vehicles.length === 0) {
+            console.log('運搬記録リスト表示完了');
+        } catch (error) {
+            console.error('運搬記録リスト表示でエラー:', error);
+            const container = document.getElementById('recordList');
+            if (container) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">🚚</div>
-                        <p>まだ車両が登録されていません。</p>
-                        <p>上のフォームから車両を登録してください。</p>
+                        <div class="empty-state-icon">❌</div>
+                        <p>表示中にエラーが発生しました。</p>
+                        <p>ブラウザのコンソール（F12）を確認してください。</p>
                     </div>
                 `;
-                return;
             }
-            
-            let html = '<table><thead><tr><th>車種</th><th>車番</th><th>荷台寸法</th><th>容量</th><th>操作</th></tr></thead><tbody>';
-            
+        }
+    }
+
+    // セレクトボックス更新
+    function updateAllSelects() {
+        // 運搬記録の工事選択
+        const recordProject = document.getElementById('recordProject');
+        if (recordProject) {
+            recordProject.innerHTML = '<option value="">選択してください</option>';
+            projects.forEach(project => {
+                recordProject.innerHTML += `<option value="${project.id}">${project.name}</option>`;
+            });
+            console.log('工事選択肢を更新:', projects.length + '件');
+        }
+        
+        // 運搬記録の車両選択
+        const recordVehicle = document.getElementById('recordVehicle');
+        if (recordVehicle) {
+            recordVehicle.innerHTML = '<option value="">選択してください</option>';
             vehicles.forEach(vehicle => {
+                recordVehicle.innerHTML += `<option value="${vehicle.id}">${vehicle.type} (${vehicle.number})</option>`;
+            });
+            console.log('車両選択肢を更新:', vehicles.length + '台');
+        }
+        
+        // 集計の工事選択
+        const summaryProject = document.getElementById('summaryProject');
+        if (summaryProject) {
+            summaryProject.innerHTML = '<option value="">すべて</option>';
+            projects.forEach(project => {
+                summaryProject.innerHTML += `<option value="${project.id}">${project.name}</option>`;
+            });
+        }
+        
+        // 集計の車両選択
+        const summaryVehicle = document.getElementById('summaryVehicle');
+        if (summaryVehicle) {
+            summaryVehicle.innerHTML = '<option value="">すべて</option>';
+            vehicles.forEach(vehicle => {
+                summaryVehicle.innerHTML += `<option value="${vehicle.id}">${vehicle.type} (${vehicle.number})</option>`;
+            });
+        }
+        
+        // 警告メッセージの表示/非表示
+        updateRecordFormMessage();
+    }
+    
+    // 運搬記録フォームの警告メッセージ更新
+    function updateRecordFormMessage() {
+        const messageBox = document.getElementById('recordFormMessage');
+        const needProjectMsg = document.getElementById('needProjectMessage');
+        const needVehicleMsg = document.getElementById('needVehicleMessage');
+        
+        if (!messageBox || !needProjectMsg || !needVehicleMsg) return;
+        
+        const needProject = projects.length === 0;
+        const needVehicle = vehicles.length === 0;
+        
+        if (needProject || needVehicle) {
+            messageBox.style.display = 'block';
+            needProjectMsg.style.display = needProject ? 'list-item' : 'none';
+            needVehicleMsg.style.display = needVehicle ? 'list-item' : 'none';
+        } else {
+            messageBox.style.display = 'none';
+        }
+    }
+
+    // 統計更新
+    function updateStats() {
+        try {
+            console.log('統計更新開始');
+            const projectCountEl = document.getElementById('projectCount');
+            const vehicleCountEl = document.getElementById('vehicleCount');
+            const recordCountEl = document.getElementById('recordCountStat');
+            const totalCountEl = document.getElementById('totalCount');
+            
+            if (projectCountEl) projectCountEl.textContent = projects.length;
+            if (vehicleCountEl) vehicleCountEl.textContent = vehicles.length;
+            if (recordCountEl) recordCountEl.textContent = records.length;
+            
+            const totalCount = records.reduce((sum, record) => sum + (record.count || 0), 0);
+            if (totalCountEl) totalCountEl.textContent = totalCount;
+            
+            console.log('統計更新完了:', {
+                projects: projects.length,
+                vehicles: vehicles.length,
+                records: records.length,
+                totalCount: totalCount
+            });
+        } catch (error) {
+            console.error('統計更新エラー:', error);
+        }
+    }
+
+    // フォームクリア
+    function clearProjectForm() {
+        document.getElementById('projectName').value = '';
+        document.getElementById('projectLocation').value = '';
+        document.getElementById('projectContractor').value = '';
+        editingProjectId = null;
+    }
+
+    function clearVehicleForm() {
+        document.getElementById('vehicleType').value = '';
+        document.getElementById('vehicleNumber').value = '';
+        document.getElementById('vehicleLength').value = '';
+        document.getElementById('vehicleWidth').value = '';
+        document.getElementById('vehicleHeight').value = '';
+        document.getElementById('vehicleCapacity').value = '';
+        editingVehicleId = null;
+    }
+
+    function clearRecordForm() {
+        const today = new Date().toISOString().split('T')[0];
+        const countInput = document.getElementById('recordCount');
+        
+        document.getElementById('recordDate').value = today;
+        document.getElementById('recordProject').value = '';
+        document.getElementById('recordVehicle').value = '';
+        if (countInput) {
+            countInput.value = '';
+            countInput.classList.remove('error');
+        }
+        editingRecordId = null;
+    }
+
+    // 集計実行
+    function generateSummary() {
+        const startDate = document.getElementById('summaryStartDate').value;
+        const endDate = document.getElementById('summaryEndDate').value;
+        const projectId = document.getElementById('summaryProject').value;
+        const vehicleId = document.getElementById('summaryVehicle').value;
+        
+        if (!startDate || !endDate) {
+            alert('❌ 開始日と終了日を入力してください。');
+            return;
+        }
+        
+        // フィルター
+        let filteredRecords = records.filter(record => {
+            if (record.date < startDate || record.date > endDate) return false;
+            if (projectId && record.projectId !== projectId) return false;
+            if (vehicleId && record.vehicleId !== vehicleId) return false;
+            return true;
+        });
+        
+        if (filteredRecords.length === 0) {
+            alert('⚠️ 該当する記録がありません。');
+            return;
+        }
+        
+        // 工事別集計
+        const projectSummary = {};
+        filteredRecords.forEach(record => {
+            const vehicle = vehicles.find(v => v.id === record.vehicleId);
+            const capacity = vehicle && vehicle.capacity ? vehicle.capacity : 0;
+            const volume = record.count * capacity;
+            
+            if (!projectSummary[record.projectId]) {
+                projectSummary[record.projectId] = {
+                    count: 0,
+                    volume: 0
+                };
+            }
+            projectSummary[record.projectId].count += record.count;
+            projectSummary[record.projectId].volume += volume;
+        });
+        
+        // 車両別集計
+        const vehicleSummary = {};
+        filteredRecords.forEach(record => {
+            const vehicle = vehicles.find(v => v.id === record.vehicleId);
+            const capacity = vehicle && vehicle.capacity ? vehicle.capacity : 0;
+            const volume = record.count * capacity;
+            
+            if (!vehicleSummary[record.vehicleId]) {
+                vehicleSummary[record.vehicleId] = {
+                    count: 0,
+                    volume: 0
+                };
+            }
+            vehicleSummary[record.vehicleId].count += record.count;
+            vehicleSummary[record.vehicleId].volume += volume;
+        });
+        
+        // 日付別集計
+        const dateSummary = {};
+        filteredRecords.forEach(record => {
+            if (!dateSummary[record.date]) {
+                dateSummary[record.date] = 0;
+            }
+            dateSummary[record.date] += record.count;
+        });
+        
+        // 表示
+        let html = `
+            <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-left: 4px solid #667eea; border-radius: 8px;" class="print-header">
+                <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #333;">📅 集計期間</h3>
+                <p style="margin: 0; font-size: 16px; font-weight: bold;">${startDate} 〜 ${endDate}</p>
+                <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">対象記録: ${filteredRecords.length}件</p>
+            </div>
+            
+            <div class="summary-table">
+                <h3>📊 工事別集計</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>工事名</th>
+                            <th>工事箇所</th>
+                            <th style="text-align: right;">運搬台数</th>
+                            <th style="text-align: right;">運搬量（m³）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        
+        let projectTotal = 0;
+        let projectVolumeTotal = 0;
+        Object.keys(projectSummary).forEach(pId => {
+            const project = projects.find(p => p.id === pId);
+            if (project) {
+                const summary = projectSummary[pId];
+                html += `
+                    <tr>
+                        <td><strong>${project.name}</strong></td>
+                        <td>${project.location || '-'}</td>
+                        <td style="text-align: right;"><strong>${summary.count}台</strong></td>
+                        <td style="text-align: right;"><strong>${summary.volume.toFixed(2)}m³</strong></td>
+                    </tr>
+                `;
+                projectTotal += summary.count;
+                projectVolumeTotal += summary.volume;
+            }
+        });
+        
+        html += `
+                    <tr class="total-row">
+                        <td colspan="2"><strong>合計</strong></td>
+                        <td style="text-align: right;"><strong>${projectTotal}台</strong></td>
+                        <td style="text-align: right;"><strong>${projectVolumeTotal.toFixed(2)}m³</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="summary-table">
+            <h3>🚚 車両別集計</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>車種</th>
+                        <th>車番</th>
+                        <th>荷台寸法</th>
+                        <th style="text-align: right;">容量</th>
+                        <th style="text-align: right;">運搬台数</th>
+                        <th style="text-align: right;">運搬量（m³）</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        
+        let vehicleTotal = 0;
+        let vehicleVolumeTotal = 0;
+        Object.keys(vehicleSummary).forEach(vId => {
+            const vehicle = vehicles.find(v => v.id === vId);
+            if (vehicle) {
+                const summary = vehicleSummary[vId];
                 // 寸法表示
                 let dimensionText = '-';
                 if (vehicle.length && vehicle.width && vehicle.height) {
                     dimensionText = `${vehicle.length}m × ${vehicle.width}m × ${vehicle.height}m`;
                 } else if (vehicle.bodySize) {
-                    // 旧データ対応
                     dimensionText = vehicle.bodySize;
                 }
                 
@@ -1084,978 +1782,299 @@
                         <td><strong>${vehicle.type}</strong></td>
                         <td>${vehicle.number}</td>
                         <td>${dimensionText}</td>
-                        <td>${vehicle.capacity ? vehicle.capacity + 'm³' : '-'}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn btn-secondary" onclick="editVehicle('${vehicle.id}')">✏️ 編集</button>
-                                <button class="btn btn-danger" onclick="deleteVehicle('${vehicle.id}')">🗑️ 削除</button>
-                            </div>
-                        </td>
+                        <td style="text-align: right;">${vehicle.capacity ? vehicle.capacity + 'm³' : '-'}</td>
+                        <td style="text-align: right;"><strong>${summary.count}台</strong></td>
+                        <td style="text-align: right;"><strong>${summary.volume.toFixed(2)}m³</strong></td>
                     </tr>
                 `;
-            });
-            
-            html += '</tbody></table>';
-            container.innerHTML = html;
-        }
+                vehicleTotal += summary.count;
+                vehicleVolumeTotal += summary.volume;
+            }
+        });
+        
+        html += `
+                    <tr class="total-row">
+                        <td colspan="4"><strong>合計</strong></td>
+                        <td style="text-align: right;"><strong>${vehicleTotal}台</strong></td>
+                        <td style="text-align: right;"><strong>${vehicleVolumeTotal.toFixed(2)}m³</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="summary-table">
+            <h3>📅 日付別集計</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>日付</th>
+                        <th style="text-align: right;">運搬台数</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        
+        const sortedDates = Object.keys(dateSummary).sort();
+        let dateTotal = 0;
+        sortedDates.forEach(date => {
+            html += `
+                <tr>
+                    <td>${date}</td>
+                    <td style="text-align: right;"><strong>${dateSummary[date]}台</strong></td>
+                </tr>
+            `;
+            dateTotal += dateSummary[date];
+        });
+        
+        html += `
+                    <tr class="total-row">
+                        <td><strong>合計</strong></td>
+                        <td style="text-align: right;"><strong>${dateTotal}台</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        `;
+        
+        document.getElementById('summaryContent').innerHTML = html;
+        document.getElementById('summaryResults').style.display = 'block';
+    }
 
-        // 運搬記録追加・更新（改善版）
-        function addRecord() {
-            try {
-                console.log('=== 運搬記録追加開始 ===');
-                
-                // 要素の取得
-                const dateInput = document.getElementById('recordDate');
-                const projectSelect = document.getElementById('recordProject');
-                const vehicleSelect = document.getElementById('recordVehicle');
-                const countInput = document.getElementById('recordCount');
-                
-                // エラースタイルをクリア
-                if (countInput) countInput.classList.remove('error');
-                
-                // 値の取得
-                const date = dateInput ? dateInput.value : '';
-                const projectId = projectSelect ? projectSelect.value : '';
-                const vehicleId = vehicleSelect ? vehicleSelect.value : '';
-                const countValue = (countInput && countInput.value != null) ? String(countInput.value).trim() : '';
-                
-                console.log('取得した値:', { date, projectId, vehicleId, countValue });
-                
-                // 日付チェック
-                if (!date) {
-                    alert('❌ 日付を入力してください。');
-                    if (dateInput) dateInput.focus();
-                    return;
-                }
-                
-                // 工事チェック
-                if (!projectId || projectId === '') {
-                    alert('❌ 工事を選択してください。\n\n先に「工事マスター」タブで工事を登録してください。');
-                    if (projectSelect) projectSelect.focus();
-                    return;
-                }
-                
-                // 車両チェック
-                if (!vehicleId || vehicleId === '') {
-                    alert('❌ 車両を選択してください。\n\n先に「車両マスター」タブで車両を登録してください。');
-                    if (vehicleSelect) vehicleSelect.focus();
-                    return;
-                }
-                
-                // 運搬台数チェック
-                if (!countValue || countValue === '') {
-                    alert('❌ 運搬台数を入力してください。\n\n例：10');
-                    if (countInput) {
-                        countInput.classList.add('error');
-                        countInput.focus();
-                    }
-                    return;
-                }
-                
-                // 数値に変換
-                const count = parseInt(countValue, 10);
-                console.log('変換後の運搬台数:', count, 'type:', typeof count);
-                console.log('変換後の運搬台数:', count, 'type:', typeof count);
-                
-                // 数値の妥当性チェック
-                if (isNaN(count)) {
-                    alert('❌ 運搬台数は数値で入力してください。\n\n入力された値: ' + countValue + '\n正しい例: 10');
-                    if (countInput) {
-                        countInput.classList.add('error');
-                        countInput.value = '';
-                        countInput.focus();
-                    }
-                    return;
-                }
-                
-                if (count < 1) {
-                    alert('❌ 運搬台数は1以上で入力してください。\n\n入力された値: ' + count);
-                    if (countInput) {
-                        countInput.classList.add('error');
-                        countInput.value = '';
-                        countInput.focus();
-                    }
-                    return;
-                }
-                
-                if (count > 9999) {
-                    alert('❌ 運搬台数は9999以下で入力してください。\n\n入力された値: ' + count);
-                    if (countInput) {
-                        countInput.classList.add('error');
-                        countInput.focus();
-                    }
-                    return;
-                }
-                
-                // 小数チェック
-                if (countValue.includes('.') || countValue.includes(',')) {
-                    alert('❌ 運搬台数は整数で入力してください（小数点は使用できません）。\n\n入力された値: ' + countValue + '\n正しい例: 10');
-                    if (countInput) {
-                        countInput.classList.add('error');
-                        countInput.value = '';
-                        countInput.focus();
-                    }
-                    return;
-                }
-                
-                console.log('✓ すべてのバリデーション通過');
-                console.log('13. ✅ すべてのバリデーション通過！');
-                
-                // データの保存
-                console.log('14. データ保存開始 - editingRecordId:', editingRecordId);
-                if (editingRecordId) {
-                    console.log('15. 編集モード:', editingRecordId);
-                    const record = records.find(r => r.id === editingRecordId);
-                    if (record) {
-                        record.date = date;
-                        record.projectId = projectId;
-                        record.vehicleId = vehicleId;
-                        record.count = count;
-                        console.log('16. 記録を更新:', record);
-                    } else {
-                        console.error('❌ 編集対象の記録が見つかりません');
-                        alert('❌ 編集対象の記録が見つかりません。');
-                        return;
-                    }
-                    editingRecordId = null;
-                } else {
-                    console.log('15. 新規追加モード');
-                    const newRecord = {
-                        id: Date.now().toString(),
-                        date: date,
-                        projectId: projectId,
-                        vehicleId: vehicleId,
-                        count: count
-                    };
-                    console.log('16. 新しい記録を作成:', JSON.stringify(newRecord));
-                    records.push(newRecord);
-                    console.log('17. 配列に追加完了 - 全記録数:', records.length);
-                    console.log('18. 全記録内容:', JSON.stringify(records));
-                }
-                
-                // データ保存
-                console.log('19. localStorage保存開始...');
-                saveData();
-                console.log('20. ✓ localStorage保存完了');
-                
-                // リスト再描画
-                console.log('21. リスト再描画開始...');
-                renderRecordList();
-                console.log('22. ✓ リスト再描画完了');
-                
-                // フォームクリア
-                console.log('23. フォームクリア開始...');
-                clearRecordForm();
-                console.log('24. ✓ フォームクリア完了');
-                
-                // 統計更新
-                console.log('25. 統計更新開始...');
-                updateStats();
-                console.log('26. ✓ 統計更新完了');
-                
-                console.log('27. === ✅ 運搬記録追加成功！全処理完了 ===');
-                alert('✅ 運搬記録を保存しました！');
-                
-            } catch (error) {
-                console.error('=== ❌ エラー発生 ===');
-                console.error('エラー:', error);
-                console.error('スタック:', error.stack);
-                alert('❌ エラーが発生しました。\n\nエラー内容: ' + error.message + '\n\nブラウザのコンソール（F12）を開いて詳細を確認してください。');
-            }
-        }
-
-        // 運搬記録編集
-        function editRecord(id) {
-            const record = records.find(r => r.id === id);
-            document.getElementById('recordDate').value = record.date;
-            document.getElementById('recordProject').value = record.projectId;
-            document.getElementById('recordVehicle').value = record.vehicleId;
-            document.getElementById('recordCount').value = record.count;
-            editingRecordId = id;
-            
-            document.querySelector('.tab[onclick*="records"]').click();
-            window.scrollTo(0, 0);
-        }
-
-        // 運搬記録削除
-        function deleteRecord(id) {
-            if (!confirm('この運搬記録を削除しますか？')) return;
-            
-            records = records.filter(r => r.id !== id);
-            saveData();
-            renderRecordList();
-            updateStats();
-        }
-
-        // 運搬記録リスト表示
-        function renderRecordList() {
-            try {
-                console.log('運搬記録リスト表示開始, 記録数:', records.length);
-                const container = document.getElementById('recordList');
-                
-                if (!container) {
-                    console.error('recordListコンテナが見つかりません');
-                    return;
-                }
-                
-                if (records.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-icon">📝</div>
-                            <p>まだ運搬記録がありません。</p>
-                            <p>上のフォームから運搬記録を入力してください。</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                // 日付降順でソート
-                const sortedRecords = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
-                console.log('ソート済み記録数:', sortedRecords.length);
-                
-                let html = '<table><thead><tr><th>日付</th><th>工事</th><th>車両</th><th>車番</th><th>運搬台数</th><th>操作</th></tr></thead><tbody>';
-                
-                sortedRecords.forEach((record, index) => {
-                    try {
-                        const project = projects.find(p => p.id === record.projectId);
-                        const vehicle = vehicles.find(v => v.id === record.vehicleId);
-                        
-                        html += `
-                            <tr>
-                                <td>${record.date}</td>
-                                <td>${project ? project.name : '（削除済み）'}</td>
-                                <td>${vehicle ? vehicle.type : '（削除済み）'}</td>
-                                <td>${vehicle ? vehicle.number : '-'}</td>
-                                <td><strong>${record.count}台</strong></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-secondary" onclick="editRecord('${record.id}')">✏️ 編集</button>
-                                        <button class="btn btn-danger" onclick="deleteRecord('${record.id}')">🗑️ 削除</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-                    } catch (rowError) {
-                        console.error(`記録行${index}の表示でエラー:`, rowError, record);
-                    }
-                });
-                
-                html += '</tbody></table>';
-                container.innerHTML = html;
-                console.log('運搬記録リスト表示完了');
-            } catch (error) {
-                console.error('運搬記録リスト表示でエラー:', error);
-                const container = document.getElementById('recordList');
-                if (container) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-icon">❌</div>
-                            <p>表示中にエラーが発生しました。</p>
-                            <p>ブラウザのコンソール（F12）を確認してください。</p>
-                        </div>
-                    `;
-                }
-            }
-        }
-
-        // セレクトボックス更新
-        function updateAllSelects() {
-            // 運搬記録の工事選択
-            const recordProject = document.getElementById('recordProject');
-            if (recordProject) {
-                recordProject.innerHTML = '<option value="">選択してください</option>';
-                projects.forEach(project => {
-                    recordProject.innerHTML += `<option value="${project.id}">${project.name}</option>`;
-                });
-                console.log('工事選択肢を更新:', projects.length + '件');
-            }
-            
-            // 運搬記録の車両選択
-            const recordVehicle = document.getElementById('recordVehicle');
-            if (recordVehicle) {
-                recordVehicle.innerHTML = '<option value="">選択してください</option>';
-                vehicles.forEach(vehicle => {
-                    recordVehicle.innerHTML += `<option value="${vehicle.id}">${vehicle.type} (${vehicle.number})</option>`;
-                });
-                console.log('車両選択肢を更新:', vehicles.length + '台');
-            }
-            
-            // 集計の工事選択
-            const summaryProject = document.getElementById('summaryProject');
-            if (summaryProject) {
-                summaryProject.innerHTML = '<option value="">すべて</option>';
-                projects.forEach(project => {
-                    summaryProject.innerHTML += `<option value="${project.id}">${project.name}</option>`;
-                });
-            }
-            
-            // 集計の車両選択
-            const summaryVehicle = document.getElementById('summaryVehicle');
-            if (summaryVehicle) {
-                summaryVehicle.innerHTML = '<option value="">すべて</option>';
-                vehicles.forEach(vehicle => {
-                    summaryVehicle.innerHTML += `<option value="${vehicle.id}">${vehicle.type} (${vehicle.number})</option>`;
-                });
-            }
-            
-            // 警告メッセージの表示/非表示
-            updateRecordFormMessage();
+    // Excel出力
+    function exportSummaryToExcel() {
+        const startDate = document.getElementById('summaryStartDate').value;
+        const endDate = document.getElementById('summaryEndDate').value;
+        const projectId = document.getElementById('summaryProject').value;
+        const vehicleId = document.getElementById('summaryVehicle').value;
+        
+        if (!startDate || !endDate) {
+            alert('❌ 開始日と終了日を入力してください。');
+            return;
         }
         
-        // 運搬記録フォームの警告メッセージ更新
-        function updateRecordFormMessage() {
-            const messageBox = document.getElementById('recordFormMessage');
-            const needProjectMsg = document.getElementById('needProjectMessage');
-            const needVehicleMsg = document.getElementById('needVehicleMessage');
-            
-            if (!messageBox || !needProjectMsg || !needVehicleMsg) return;
-            
-            const needProject = projects.length === 0;
-            const needVehicle = vehicles.length === 0;
-            
-            if (needProject || needVehicle) {
-                messageBox.style.display = 'block';
-                needProjectMsg.style.display = needProject ? 'list-item' : 'none';
-                needVehicleMsg.style.display = needVehicle ? 'list-item' : 'none';
-            } else {
-                messageBox.style.display = 'none';
-            }
+        // フィルター
+        let filteredRecords = records.filter(record => {
+            if (record.date < startDate || record.date > endDate) return false;
+            if (projectId && record.projectId !== projectId) return false;
+            if (vehicleId && record.vehicleId !== vehicleId) return false;
+            return true;
+        });
+        
+        if (filteredRecords.length === 0) {
+            alert('⚠️ 該当する記録がありません。');
+            return;
         }
-
-        // 統計更新
-        function updateStats() {
-            try {
-                console.log('統計更新開始');
-                const projectCountEl = document.getElementById('projectCount');
-                const vehicleCountEl = document.getElementById('vehicleCount');
-                const recordCountEl = document.getElementById('recordCountStat');
-                const totalCountEl = document.getElementById('totalCount');
-                
-                if (projectCountEl) projectCountEl.textContent = projects.length;
-                if (vehicleCountEl) vehicleCountEl.textContent = vehicles.length;
-                if (recordCountEl) recordCountEl.textContent = records.length;
-                
-                const totalCount = records.reduce((sum, record) => sum + (record.count || 0), 0);
-                if (totalCountEl) totalCountEl.textContent = totalCount;
-                
-                console.log('統計更新完了:', {
-                    projects: projects.length,
-                    vehicles: vehicles.length,
-                    records: records.length,
-                    totalCount: totalCount
-                });
-            } catch (error) {
-                console.error('統計更新エラー:', error);
+        
+        const workbook = XLSX.utils.book_new();
+        
+        // 工事別集計シート
+        const projectData = [
+            ['工事別運搬台数・運搬量集計'],
+            ['期間', `${startDate} 〜 ${endDate}`],
+            [],
+            ['工事名', '工事箇所', '請負者', '運搬台数', '運搬量（m³）']
+        ];
+        
+        const projectSummary = {};
+        filteredRecords.forEach(record => {
+            const vehicle = vehicles.find(v => v.id === record.vehicleId);
+            const capacity = vehicle && vehicle.capacity ? vehicle.capacity : 0;
+            const volume = record.count * capacity;
+            
+            if (!projectSummary[record.projectId]) {
+                projectSummary[record.projectId] = {
+                    count: 0,
+                    volume: 0
+                };
             }
+            projectSummary[record.projectId].count += record.count;
+            projectSummary[record.projectId].volume += volume;
+        });
+        
+        let projectTotal = 0;
+        let projectVolumeTotal = 0;
+        Object.keys(projectSummary).forEach(pId => {
+            const project = projects.find(p => p.id === pId);
+            if (project) {
+                const summary = projectSummary[pId];
+                projectData.push([
+                    project.name,
+                    project.location || '',
+                    project.contractor || '',
+                    summary.count,
+                    parseFloat(summary.volume.toFixed(2))
+                ]);
+                projectTotal += summary.count;
+                projectVolumeTotal += summary.volume;
+            }
+        });
+        
+        projectData.push(['', '', '合計', projectTotal, parseFloat(projectVolumeTotal.toFixed(2))]);
+        
+        const projectSheet = XLSX.utils.aoa_to_sheet(projectData);
+        projectSheet['!cols'] = [
+            { wch: 30 },
+            { wch: 25 },
+            { wch: 25 },
+            { wch: 12 },
+            { wch: 15 }
+        ];
+        XLSX.utils.book_append_sheet(workbook, projectSheet, '工事別集計');
+        
+        // 車両別集計シート
+        const vehicleData = [
+            ['車両別運搬台数・運搬量集計'],
+            ['期間', `${startDate} 〜 ${endDate}`],
+            [],
+            ['車種', '車番', '荷台寸法', '容量', '運搬台数', '運搬量（m³）']
+        ];
+        
+        const vehicleSummary = {};
+        filteredRecords.forEach(record => {
+            const vehicle = vehicles.find(v => v.id === record.vehicleId);
+            const capacity = vehicle && vehicle.capacity ? vehicle.capacity : 0;
+            const volume = record.count * capacity;
+            
+            if (!vehicleSummary[record.vehicleId]) {
+                vehicleSummary[record.vehicleId] = {
+                    count: 0,
+                    volume: 0
+                };
+            }
+            vehicleSummary[record.vehicleId].count += record.count;
+            vehicleSummary[record.vehicleId].volume += volume;
+        });
+        
+        let vehicleTotal = 0;
+        let vehicleVolumeTotal = 0;
+        Object.keys(vehicleSummary).forEach(vId => {
+            const vehicle = vehicles.find(v => v.id === vId);
+            if (vehicle) {
+                const summary = vehicleSummary[vId];
+                // 寸法表示
+                let dimensionText = '';
+                if (vehicle.length && vehicle.width && vehicle.height) {
+                    dimensionText = `${vehicle.length}m × ${vehicle.width}m × ${vehicle.height}m`;
+                } else if (vehicle.bodySize) {
+                    dimensionText = vehicle.bodySize;
+                }
+                
+                vehicleData.push([
+                    vehicle.type,
+                    vehicle.number,
+                    dimensionText,
+                    vehicle.capacity ? vehicle.capacity + 'm³' : '',
+                    summary.count,
+                    parseFloat(summary.volume.toFixed(2))
+                ]);
+                vehicleTotal += summary.count;
+                vehicleVolumeTotal += summary.volume;
+            }
+        });
+        
+        vehicleData.push(['', '', '', '合計', vehicleTotal, parseFloat(vehicleVolumeTotal.toFixed(2))]);
+        
+        const vehicleSheet = XLSX.utils.aoa_to_sheet(vehicleData);
+        vehicleSheet['!cols'] = [
+            { wch: 15 },
+            { wch: 20 },
+            { wch: 25 },
+            { wch: 10 },
+            { wch: 12 },
+            { wch: 15 }
+        ];
+        XLSX.utils.book_append_sheet(workbook, vehicleSheet, '車両別集計');
+        
+        // ファイル出力
+        const fileName = `運搬台数集計_${startDate}_${endDate}.xlsx`;
+        XLSX.writeFile(workbook, fileName);
+        
+        alert('✅ Excelファイルをダウンロードしました！');
+    }
+
+    // データ共有
+    async function shareData() {
+        const data = {
+            projects,
+            vehicles,
+            records,
+            exportDate: new Date().toISOString()
+        };
+        
+        const jsonString = JSON.stringify(data, null, 2);
+        const dateStr = new Date().toISOString().split('T')[0];
+        
+        // 共有方法選択
+        const choice = await showShareOptions();
+        
+        if (choice === 'cancel') return;
+        
+        let fileName, mimeType;
+        
+        if (choice === 'txt') {
+            fileName = `dump-truck-data-${dateStr}.txt`;
+            mimeType = 'text/plain;charset=utf-8';
+        } else if (choice === 'text-only') {
+            await shareAsText(jsonString);
+            return;
+        } else {
+            fileName = `dump-truck-data-${dateStr}.json`;
+            mimeType = 'application/json;charset=utf-8';
         }
-
-        // フォームクリア
-        function clearProjectForm() {
-            document.getElementById('projectName').value = '';
-            document.getElementById('projectLocation').value = '';
-            document.getElementById('projectContractor').value = '';
-            editingProjectId = null;
-        }
-
-        function clearVehicleForm() {
-            document.getElementById('vehicleType').value = '';
-            document.getElementById('vehicleNumber').value = '';
-            document.getElementById('vehicleLength').value = '';
-            document.getElementById('vehicleWidth').value = '';
-            document.getElementById('vehicleHeight').value = '';
-            document.getElementById('vehicleCapacity').value = '';
-            editingVehicleId = null;
-        }
-
-        function clearRecordForm() {
-            const today = new Date().toISOString().split('T')[0];
-            const countInput = document.getElementById('recordCount');
-            
-            document.getElementById('recordDate').value = today;
-            document.getElementById('recordProject').value = '';
-            document.getElementById('recordVehicle').value = '';
-            if (countInput) {
-                countInput.value = '';
-                countInput.classList.remove('error');
-            }
-            editingRecordId = null;
-        }
-
-        // 集計実行
-        function generateSummary() {
-            const startDate = document.getElementById('summaryStartDate').value;
-            const endDate = document.getElementById('summaryEndDate').value;
-            const projectId = document.getElementById('summaryProject').value;
-            const vehicleId = document.getElementById('summaryVehicle').value;
-            
-            if (!startDate || !endDate) {
-                alert('❌ 開始日と終了日を入力してください。');
-                return;
-            }
-            
-            // フィルター
-            let filteredRecords = records.filter(record => {
-                if (record.date < startDate || record.date > endDate) return false;
-                if (projectId && record.projectId !== projectId) return false;
-                if (vehicleId && record.vehicleId !== vehicleId) return false;
-                return true;
-            });
-            
-            if (filteredRecords.length === 0) {
-                alert('⚠️ 該当する記録がありません。');
-                return;
-            }
-            
-            // 工事別集計
-            const projectSummary = {};
-            filteredRecords.forEach(record => {
-                const vehicle = vehicles.find(v => v.id === record.vehicleId);
-                const capacity = vehicle && vehicle.capacity ? vehicle.capacity : 0;
-                const volume = record.count * capacity;
-                
-                if (!projectSummary[record.projectId]) {
-                    projectSummary[record.projectId] = {
-                        count: 0,
-                        volume: 0
-                    };
-                }
-                projectSummary[record.projectId].count += record.count;
-                projectSummary[record.projectId].volume += volume;
-            });
-            
-            // 車両別集計
-            const vehicleSummary = {};
-            filteredRecords.forEach(record => {
-                const vehicle = vehicles.find(v => v.id === record.vehicleId);
-                const capacity = vehicle && vehicle.capacity ? vehicle.capacity : 0;
-                const volume = record.count * capacity;
-                
-                if (!vehicleSummary[record.vehicleId]) {
-                    vehicleSummary[record.vehicleId] = {
-                        count: 0,
-                        volume: 0
-                    };
-                }
-                vehicleSummary[record.vehicleId].count += record.count;
-                vehicleSummary[record.vehicleId].volume += volume;
-            });
-            
-            // 日付別集計
-            const dateSummary = {};
-            filteredRecords.forEach(record => {
-                if (!dateSummary[record.date]) {
-                    dateSummary[record.date] = 0;
-                }
-                dateSummary[record.date] += record.count;
-            });
-            
-            // 表示
-            let html = `
-                <div class="summary-table">
-                    <h3>📊 工事別集計</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>工事名</th>
-                                <th>工事箇所</th>
-                                <th>運搬台数</th>
-                                <th>運搬量（m³）</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-            
-            let projectTotal = 0;
-            let projectVolumeTotal = 0;
-            Object.keys(projectSummary).forEach(pId => {
-                const project = projects.find(p => p.id === pId);
-                if (project) {
-                    const summary = projectSummary[pId];
-                    html += `
-                        <tr>
-                            <td>${project.name}</td>
-                            <td>${project.location || '-'}</td>
-                            <td><strong>${summary.count}台</strong></td>
-                            <td><strong>${summary.volume.toFixed(2)}m³</strong></td>
-                        </tr>
-                    `;
-                    projectTotal += summary.count;
-                    projectVolumeTotal += summary.volume;
-                }
-            });
-            
-            html += `
-                        <tr class="total-row">
-                            <td colspan="2">合計</td>
-                            <td><strong>${projectTotal}台</strong></td>
-                            <td><strong>${projectVolumeTotal.toFixed(2)}m³</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="summary-table">
-                <h3>🚚 車両別集計</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>車種</th>
-                            <th>車番</th>
-                            <th>荷台寸法</th>
-                            <th>容量</th>
-                            <th>運搬台数</th>
-                            <th>運搬量（m³）</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-            
-            let vehicleTotal = 0;
-            let vehicleVolumeTotal = 0;
-            Object.keys(vehicleSummary).forEach(vId => {
-                const vehicle = vehicles.find(v => v.id === vId);
-                if (vehicle) {
-                    const summary = vehicleSummary[vId];
-                    // 寸法表示
-                    let dimensionText = '-';
-                    if (vehicle.length && vehicle.width && vehicle.height) {
-                        dimensionText = `${vehicle.length}m × ${vehicle.width}m × ${vehicle.height}m`;
-                    } else if (vehicle.bodySize) {
-                        dimensionText = vehicle.bodySize;
-                    }
-                    
-                    html += `
-                        <tr>
-                            <td>${vehicle.type}</td>
-                            <td>${vehicle.number}</td>
-                            <td>${dimensionText}</td>
-                            <td>${vehicle.capacity ? vehicle.capacity + 'm³' : '-'}</td>
-                            <td><strong>${summary.count}台</strong></td>
-                            <td><strong>${summary.volume.toFixed(2)}m³</strong></td>
-                        </tr>
-                    `;
-                    vehicleTotal += summary.count;
-                    vehicleVolumeTotal += summary.volume;
-                }
-            });
-            
-            html += `
-                        <tr class="total-row">
-                            <td colspan="4">合計</td>
-                            <td><strong>${vehicleTotal}台</strong></td>
-                            <td><strong>${vehicleVolumeTotal.toFixed(2)}m³</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="summary-table">
-                <h3>📅 日付別集計</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>日付</th>
-                            <th>運搬台数</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-            
-            const sortedDates = Object.keys(dateSummary).sort();
-            let dateTotal = 0;
-            sortedDates.forEach(date => {
-                html += `
-                    <tr>
-                        <td>${date}</td>
-                        <td><strong>${dateSummary[date]}台</strong></td>
-                    </tr>
-                `;
-                dateTotal += dateSummary[date];
-            });
-            
-            html += `
-                        <tr class="total-row">
-                            <td>合計</td>
-                            <td><strong>${dateTotal}台</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            `;
-            
-            document.getElementById('summaryContent').innerHTML = html;
-            document.getElementById('summaryResults').style.display = 'block';
-        }
-
-        // Excel出力
-        function exportSummaryToExcel() {
-            const startDate = document.getElementById('summaryStartDate').value;
-            const endDate = document.getElementById('summaryEndDate').value;
-            const projectId = document.getElementById('summaryProject').value;
-            const vehicleId = document.getElementById('summaryVehicle').value;
-            
-            if (!startDate || !endDate) {
-                alert('❌ 開始日と終了日を入力してください。');
-                return;
-            }
-            
-            // フィルター
-            let filteredRecords = records.filter(record => {
-                if (record.date < startDate || record.date > endDate) return false;
-                if (projectId && record.projectId !== projectId) return false;
-                if (vehicleId && record.vehicleId !== vehicleId) return false;
-                return true;
-            });
-            
-            if (filteredRecords.length === 0) {
-                alert('⚠️ 該当する記録がありません。');
-                return;
-            }
-            
-            const workbook = XLSX.utils.book_new();
-            
-            // 工事別集計シート
-            const projectData = [
-                ['工事別運搬台数・運搬量集計'],
-                ['期間', `${startDate} 〜 ${endDate}`],
-                [],
-                ['工事名', '工事箇所', '請負者', '運搬台数', '運搬量（m³）']
-            ];
-            
-            const projectSummary = {};
-            filteredRecords.forEach(record => {
-                const vehicle = vehicles.find(v => v.id === record.vehicleId);
-                const capacity = vehicle && vehicle.capacity ? vehicle.capacity : 0;
-                const volume = record.count * capacity;
-                
-                if (!projectSummary[record.projectId]) {
-                    projectSummary[record.projectId] = {
-                        count: 0,
-                        volume: 0
-                    };
-                }
-                projectSummary[record.projectId].count += record.count;
-                projectSummary[record.projectId].volume += volume;
-            });
-            
-            let projectTotal = 0;
-            let projectVolumeTotal = 0;
-            Object.keys(projectSummary).forEach(pId => {
-                const project = projects.find(p => p.id === pId);
-                if (project) {
-                    const summary = projectSummary[pId];
-                    projectData.push([
-                        project.name,
-                        project.location || '',
-                        project.contractor || '',
-                        summary.count,
-                        parseFloat(summary.volume.toFixed(2))
-                    ]);
-                    projectTotal += summary.count;
-                    projectVolumeTotal += summary.volume;
-                }
-            });
-            
-            projectData.push(['', '', '合計', projectTotal, parseFloat(projectVolumeTotal.toFixed(2))]);
-            
-            const projectSheet = XLSX.utils.aoa_to_sheet(projectData);
-            projectSheet['!cols'] = [
-                { wch: 30 },
-                { wch: 25 },
-                { wch: 25 },
-                { wch: 12 },
-                { wch: 15 }
-            ];
-            XLSX.utils.book_append_sheet(workbook, projectSheet, '工事別集計');
-            
-            // 車両別集計シート
-            const vehicleData = [
-                ['車両別運搬台数・運搬量集計'],
-                ['期間', `${startDate} 〜 ${endDate}`],
-                [],
-                ['車種', '車番', '荷台寸法', '容量', '運搬台数', '運搬量（m³）']
-            ];
-            
-            const vehicleSummary = {};
-            filteredRecords.forEach(record => {
-                const vehicle = vehicles.find(v => v.id === record.vehicleId);
-                const capacity = vehicle && vehicle.capacity ? vehicle.capacity : 0;
-                const volume = record.count * capacity;
-                
-                if (!vehicleSummary[record.vehicleId]) {
-                    vehicleSummary[record.vehicleId] = {
-                        count: 0,
-                        volume: 0
-                    };
-                }
-                vehicleSummary[record.vehicleId].count += record.count;
-                vehicleSummary[record.vehicleId].volume += volume;
-            });
-            
-            let vehicleTotal = 0;
-            let vehicleVolumeTotal = 0;
-            Object.keys(vehicleSummary).forEach(vId => {
-                const vehicle = vehicles.find(v => v.id === vId);
-                if (vehicle) {
-                    const summary = vehicleSummary[vId];
-                    // 寸法表示
-                    let dimensionText = '';
-                    if (vehicle.length && vehicle.width && vehicle.height) {
-                        dimensionText = `${vehicle.length}m × ${vehicle.width}m × ${vehicle.height}m`;
-                    } else if (vehicle.bodySize) {
-                        dimensionText = vehicle.bodySize;
-                    }
-                    
-                    vehicleData.push([
-                        vehicle.type,
-                        vehicle.number,
-                        dimensionText,
-                        vehicle.capacity ? vehicle.capacity + 'm³' : '',
-                        summary.count,
-                        parseFloat(summary.volume.toFixed(2))
-                    ]);
-                    vehicleTotal += summary.count;
-                    vehicleVolumeTotal += summary.volume;
-                }
-            });
-            
-            vehicleData.push(['', '', '', '合計', vehicleTotal, parseFloat(vehicleVolumeTotal.toFixed(2))]);
-            
-            const vehicleSheet = XLSX.utils.aoa_to_sheet(vehicleData);
-            vehicleSheet['!cols'] = [
-                { wch: 15 },
-                { wch: 20 },
-                { wch: 25 },
-                { wch: 10 },
-                { wch: 12 },
-                { wch: 15 }
-            ];
-            XLSX.utils.book_append_sheet(workbook, vehicleSheet, '車両別集計');
-            
-            // ファイル出力
-            const fileName = `運搬台数集計_${startDate}_${endDate}.xlsx`;
-            XLSX.writeFile(workbook, fileName);
-            
-            alert('✅ Excelファイルをダウンロードしました！');
-        }
-
-        // データ共有
-        async function shareData() {
-            const data = {
-                projects,
-                vehicles,
-                records,
-                exportDate: new Date().toISOString()
-            };
-            
-            const jsonString = JSON.stringify(data, null, 2);
-            const dateStr = new Date().toISOString().split('T')[0];
-            
-            // 共有方法選択
-            const choice = await showShareOptions();
-            
-            if (choice === 'cancel') return;
-            
-            let fileName, mimeType;
-            
-            if (choice === 'txt') {
-                fileName = `dump-truck-data-${dateStr}.txt`;
-                mimeType = 'text/plain;charset=utf-8';
-            } else if (choice === 'text-only') {
-                await shareAsText(jsonString);
-                return;
-            } else {
-                fileName = `dump-truck-data-${dateStr}.json`;
-                mimeType = 'application/json;charset=utf-8';
-            }
-            
-            // Web Share API
-            if (navigator.share) {
-                try {
-                    const blob = new Blob([jsonString], { type: mimeType });
-                    const file = new File([blob], fileName, { type: mimeType });
-                    
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        await navigator.share({
-                            title: 'ダンプトラック運搬台数管理データ',
-                            text: `運搬台数管理データ（${projects.length}件の工事、${vehicles.length}台の車両、${records.length}件の記録）`,
-                            files: [file]
-                        });
-                        
-                        alert('✅ データを共有しました！');
-                        localStorage.setItem('lastBackupTime', new Date().toISOString());
-                        updateBackupStatus('success', '共有完了');
-                        return;
-                    }
-                } catch (error) {
-                    if (error.name === 'AbortError') return;
-                    console.log('Web Share API エラー:', error);
-                }
-            }
-            
-            // ダウンロード方式
+        
+        // Web Share API
+        if (navigator.share) {
             try {
                 const blob = new Blob([jsonString], { type: mimeType });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = fileName;
-                a.style.display = 'none';
+                const file = new File([blob], fileName, { type: mimeType });
                 
-                document.body.appendChild(a);
-                a.click();
-                
-                setTimeout(() => {
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }, 100);
-                
-                alert('✅ ファイルをダウンロードしました！\n\nファイル名: ' + fileName);
-                localStorage.setItem('lastBackupTime', new Date().toISOString());
-                updateBackupStatus('success', 'バックアップ完了');
-            } catch (error) {
-                console.error('Download error:', error);
-                showJsonDialog(jsonString, fileName);
-            }
-        }
-
-        // 共有方法選択ダイアログ
-        function showShareOptions() {
-            return new Promise((resolve) => {
-                const dialog = document.createElement('div');
-                dialog.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0,0,0,0.8);
-                    z-index: 10000;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 20px;
-                `;
-                
-                const content = document.createElement('div');
-                content.style.cssText = `
-                    background: white;
-                    border-radius: 15px;
-                    padding: 25px;
-                    max-width: 400px;
-                    width: 100%;
-                    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-                `;
-                
-                content.innerHTML = `
-                    <h3 style="margin-top: 0; color: #333; font-size: 20px;">📤 共有方法を選択</h3>
-                    <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
-                        LINEで共有する場合は「TXT形式」を推奨します
-                    </p>
-                    
-                    <button onclick="selectShare('txt')" style="
-                        width: 100%;
-                        padding: 15px;
-                        margin-bottom: 10px;
-                        background: linear-gradient(135deg, #06C755 0%, #00B900 100%);
-                        color: white;
-                        border: none;
-                        border-radius: 10px;
-                        cursor: pointer;
-                        font-size: 16px;
-                        font-weight: bold;
-                        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-                    ">
-                        📱 TXT形式（LINE推奨）
-                    </button>
-                    
-                    <button onclick="selectShare('json')" style="
-                        width: 100%;
-                        padding: 15px;
-                        margin-bottom: 10px;
-                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                        color: white;
-                        border: none;
-                        border-radius: 10px;
-                        cursor: pointer;
-                        font-size: 16px;
-                        font-weight: bold;
-                        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-                    ">
-                        💾 JSON形式（標準）
-                    </button>
-                    
-                    <button onclick="selectShare('text-only')" style="
-                        width: 100%;
-                        padding: 15px;
-                        margin-bottom: 10px;
-                        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-                        color: white;
-                        border: none;
-                        border-radius: 10px;
-                        cursor: pointer;
-                        font-size: 16px;
-                        font-weight: bold;
-                        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-                    ">
-                        📝 テキストのみ
-                    </button>
-                    
-                    <button onclick="selectShare('cancel')" style="
-                        width: 100%;
-                        padding: 12px;
-                        background: #e0e0e0;
-                        color: #666;
-                        border: none;
-                        border-radius: 10px;
-                        cursor: pointer;
-                        font-size: 14px;
-                    ">
-                        キャンセル
-                    </button>
-                `;
-                
-                dialog.appendChild(content);
-                document.body.appendChild(dialog);
-                
-                window.selectShare = function(choice) {
-                    document.body.removeChild(dialog);
-                    delete window.selectShare;
-                    resolve(choice);
-                };
-            });
-        }
-
-        // テキストのみ共有
-        async function shareAsText(jsonString) {
-            if (navigator.share) {
-                try {
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
                     await navigator.share({
                         title: 'ダンプトラック運搬台数管理データ',
-                        text: jsonString
+                        text: `運搬台数管理データ（${projects.length}件の工事、${vehicles.length}台の車両、${records.length}件の記録）`,
+                        files: [file]
                     });
                     
-                    alert('✅ テキストを共有しました！');
+                    alert('✅ データを共有しました！');
                     localStorage.setItem('lastBackupTime', new Date().toISOString());
                     updateBackupStatus('success', '共有完了');
-                } catch (error) {
-                    if (error.name !== 'AbortError') {
-                        if (navigator.clipboard && navigator.clipboard.writeText) {
-                            await navigator.clipboard.writeText(jsonString);
-                            alert('✅ データをクリップボードにコピーしました！');
-                        }
-                    }
+                    return;
                 }
-            } else {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    await navigator.clipboard.writeText(jsonString);
-                    alert('✅ データをクリップボードにコピーしました！');
-                }
+            } catch (error) {
+                if (error.name === 'AbortError') return;
+                console.log('Web Share API エラー:', error);
             }
         }
+        
+        // ダウンロード方式
+        try {
+            const blob = new Blob([jsonString], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.style.display = 'none';
+            
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+            
+            alert('✅ ファイルをダウンロードしました！\n\nファイル名: ' + fileName);
+            localStorage.setItem('lastBackupTime', new Date().toISOString());
+            updateBackupStatus('success', 'バックアップ完了');
+        } catch (error) {
+            console.error('Download error:', error);
+            showJsonDialog(jsonString, fileName);
+        }
+    }
 
-        // JSONダイアログ表示
-        function showJsonDialog(jsonString, fileName) {
+    // 共有方法選択ダイアログ
+    function showShareOptions() {
+        return new Promise((resolve) => {
             const dialog = document.createElement('div');
             dialog.style.cssText = `
                 position: fixed;
@@ -2074,290 +2093,425 @@
             const content = document.createElement('div');
             content.style.cssText = `
                 background: white;
-                border-radius: 10px;
-                padding: 20px;
-                max-width: 600px;
+                border-radius: 15px;
+                padding: 25px;
+                max-width: 400px;
                 width: 100%;
-                max-height: 80vh;
-                overflow: auto;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             `;
             
             content.innerHTML = `
-                <h3 style="margin-top: 0;">📋 データのコピー</h3>
-                <p style="color: #666; font-size: 14px;">
-                    下のテキストをコピーして、「${fileName}」として保存してください。
+                <h3 style="margin-top: 0; color: #333; font-size: 20px;">📤 共有方法を選択</h3>
+                <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+                    LINEで共有する場合は「TXT形式」を推奨します
                 </p>
-                <textarea id="jsonTextArea" style="
+                
+                <button onclick="selectShare('txt')" style="
                     width: 100%;
-                    height: 300px;
-                    border: 2px solid #ddd;
-                    border-radius: 5px;
-                    padding: 10px;
-                    font-family: monospace;
-                    font-size: 12px;
-                " readonly>${jsonString}</textarea>
-                <div style="margin-top: 15px; display: flex; gap: 10px;">
-                    <button onclick="copyJsonText()" style="
-                        flex: 1;
-                        padding: 12px;
-                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                        color: white;
-                        border: none;
-                        border-radius: 8px;
-                        cursor: pointer;
-                        font-size: 16px;
-                    ">📋 コピーする</button>
-                    <button onclick="closeJsonDialog()" style="
-                        flex: 1;
-                        padding: 12px;
-                        background: #6c757d;
-                        color: white;
-                        border: none;
-                        border-radius: 8px;
-                        cursor: pointer;
-                        font-size: 16px;
-                    ">閉じる</button>
-                </div>
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: linear-gradient(135deg, #06C755 0%, #00B900 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    font-weight: bold;
+                    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+                ">
+                    📱 TXT形式（LINE推奨）
+                </button>
+                
+                <button onclick="selectShare('json')" style="
+                    width: 100%;
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    font-weight: bold;
+                    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+                ">
+                    💾 JSON形式（標準）
+                </button>
+                
+                <button onclick="selectShare('text-only')" style="
+                    width: 100%;
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    font-weight: bold;
+                    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+                ">
+                    📝 テキストのみ
+                </button>
+                
+                <button onclick="selectShare('cancel')" style="
+                    width: 100%;
+                    padding: 12px;
+                    background: #e0e0e0;
+                    color: #666;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-size: 14px;
+                ">
+                    キャンセル
+                </button>
             `;
             
             dialog.appendChild(content);
             document.body.appendChild(dialog);
             
-            window.copyJsonText = function() {
-                const textarea = document.getElementById('jsonTextArea');
-                textarea.select();
-                try {
-                    document.execCommand('copy');
-                    alert('✅ データをコピーしました！');
-                } catch (err) {
-                    alert('⚠️ コピーに失敗しました。');
-                }
-            };
-            
-            window.closeJsonDialog = function() {
+            window.selectShare = function(choice) {
                 document.body.removeChild(dialog);
-                delete window.copyJsonText;
-                delete window.closeJsonDialog;
+                delete window.selectShare;
+                resolve(choice);
             };
-        }
+        });
+    }
 
-        // データ保存機能
-        function saveDataToFile() {
-            const data = {
-                version: '1.1.0',
-                projects,
-                vehicles,
-                records,
-                exportDate: new Date().toISOString(),
-                stats: {
-                    projectCount: projects.length,
-                    vehicleCount: vehicles.length,
-                    recordCount: records.length,
-                    totalCount: records.reduce((sum, record) => sum + (record.count || 0), 0)
-                }
-            };
-            
-            const jsonString = JSON.stringify(data, null, 2);
-            const dateStr = new Date().toISOString().split('T')[0];
-            const fileName = `dump-truck-backup-${dateStr}.json`;
-            
+    // テキストのみ共有
+    async function shareAsText(jsonString) {
+        if (navigator.share) {
             try {
-                const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = fileName;
-                a.style.display = 'none';
+                await navigator.share({
+                    title: 'ダンプトラック運搬台数管理データ',
+                    text: jsonString
+                });
                 
-                document.body.appendChild(a);
-                a.click();
-                
-                setTimeout(() => {
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }, 100);
-                
-                alert('✅ データを保存しました！\n\nファイル名: ' + fileName + '\n\n工事: ' + projects.length + '件\n車両: ' + vehicles.length + '台\n記録: ' + records.length + '件');
+                alert('✅ テキストを共有しました！');
                 localStorage.setItem('lastBackupTime', new Date().toISOString());
-                updateBackupStatus('success', 'バックアップ完了');
+                updateBackupStatus('success', '共有完了');
             } catch (error) {
-                console.error('保存エラー:', error);
-                alert('❌ データの保存に失敗しました。');
-            }
-        }
-
-        // データ読み込み機能（上書き/結合）
-        function loadDataFromFile(mode) {
-            const modeText = mode === 'overwrite' ? '上書き' : '結合';
-            const warningText = mode === 'overwrite' 
-                ? '⚠️ 警告：現在のデータは完全に削除されます！\n\n' 
-                : '';
-            
-            if (!confirm(warningText + `${modeText}読み込みを実行します。\n\nファイルを選択してください。`)) {
-                return;
-            }
-            
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'application/json,.json,.txt,text/plain';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    try {
-                        const data = JSON.parse(event.target.result);
-                        
-                        // データ検証
-                        if (!data.projects || !data.vehicles || !data.records) {
-                            throw new Error('無効なデータ形式です');
-                        }
-                        
-                        if (mode === 'overwrite') {
-                            // 上書きモード
-                            executeOverwrite(data);
-                        } else {
-                            // 結合モード
-                            executeMerge(data);
-                        }
-                    } catch (error) {
-                        console.error('読み込みエラー:', error);
-                        alert('❌ ファイルの読み込みに失敗しました。\n\nエラー: ' + error.message);
+                if (error.name !== 'AbortError') {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        await navigator.clipboard.writeText(jsonString);
+                        alert('✅ データをクリップボードにコピーしました！');
                     }
-                };
-                reader.readAsText(file);
-            };
-            input.click();
+                }
+            }
+        } else {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(jsonString);
+                alert('✅ データをクリップボードにコピーしました！');
+            }
         }
+    }
 
-        // 上書き実行
-        function executeOverwrite(data) {
-            const stats = `工事: ${data.projects.length}件\n車両: ${data.vehicles.length}台\n記録: ${data.records.length}件`;
+    // JSONダイアログ表示
+    function showJsonDialog(jsonString, fileName) {
+        const dialog = document.createElement('div');
+        dialog.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        `;
+        
+        const content = document.createElement('div');
+        content.style.cssText = `
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow: auto;
+        `;
+        
+        content.innerHTML = `
+            <h3 style="margin-top: 0;">📋 データのコピー</h3>
+            <p style="color: #666; font-size: 14px;">
+                下のテキストをコピーして、「${fileName}」として保存してください。
+            </p>
+            <textarea id="jsonTextArea" style="
+                width: 100%;
+                height: 300px;
+                border: 2px solid #ddd;
+                border-radius: 5px;
+                padding: 10px;
+                font-family: monospace;
+                font-size: 12px;
+            " readonly>${jsonString}</textarea>
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                <button onclick="copyJsonText()" style="
+                    flex: 1;
+                    padding: 12px;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 16px;
+                ">📋 コピーする</button>
+                <button onclick="closeJsonDialog()" style="
+                    flex: 1;
+                    padding: 12px;
+                    background: #6c757d;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 16px;
+                ">閉じる</button>
+            </div>
+        `;
+        
+        dialog.appendChild(content);
+        document.body.appendChild(dialog);
+        
+        window.copyJsonText = function() {
+            const textarea = document.getElementById('jsonTextArea');
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                alert('✅ データをコピーしました！');
+            } catch (err) {
+                alert('⚠️ コピーに失敗しました。');
+            }
+        };
+        
+        window.closeJsonDialog = function() {
+            document.body.removeChild(dialog);
+            delete window.copyJsonText;
+            delete window.closeJsonDialog;
+        };
+    }
+
+    // データ保存機能
+    function saveDataToFile() {
+        const data = {
+            version: '1.1.1',
+            projects,
+            vehicles,
+            records,
+            exportDate: new Date().toISOString(),
+            stats: {
+                projectCount: projects.length,
+                vehicleCount: vehicles.length,
+                recordCount: records.length,
+                totalCount: records.reduce((sum, record) => sum + (record.count || 0), 0)
+            }
+        };
+        
+        const jsonString = JSON.stringify(data, null, 2);
+        const dateStr = new Date().toISOString().split('T')[0];
+        const fileName = `dump-truck-backup-${dateStr}.json`;
+        
+        try {
+            const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.style.display = 'none';
             
-            if (!confirm(`以下のデータで上書きします。よろしいですか？\n\n${stats}\n\n※現在のデータは完全に削除されます`)) {
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+            
+            alert('✅ データを保存しました！\n\nファイル名: ' + fileName + '\n\n工事: ' + projects.length + '件\n車両: ' + vehicles.length + '台\n記録: ' + records.length + '件');
+            localStorage.setItem('lastBackupTime', new Date().toISOString());
+            updateBackupStatus('success', 'バックアップ完了');
+        } catch (error) {
+            console.error('保存エラー:', error);
+            alert('❌ データの保存に失敗しました。');
+        }
+    }
+
+    // データ読み込み機能（上書き/結合）
+    function loadDataFromFile(mode) {
+        const modeText = mode === 'overwrite' ? '上書き' : '結合';
+        const warningText = mode === 'overwrite' 
+            ? '⚠️ 警告：現在のデータは完全に削除されます！\n\n' 
+            : '';
+        
+        if (!confirm(warningText + `${modeText}読み込みを実行します。\n\nファイルを選択してください。`)) {
+            return;
+        }
+        
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json,.json,.txt,text/plain';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    
+                    // データ検証
+                    if (!data.projects || !data.vehicles || !data.records) {
+                        throw new Error('無効なデータ形式です');
+                    }
+                    
+                    if (mode === 'overwrite') {
+                        // 上書きモード
+                        executeOverwrite(data);
+                    } else {
+                        // 結合モード
+                        executeMerge(data);
+                    }
+                } catch (error) {
+                    console.error('読み込みエラー:', error);
+                    alert('❌ ファイルの読み込みに失敗しました。\n\nエラー: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+
+    // 上書き実行
+    function executeOverwrite(data) {
+        const stats = `工事: ${data.projects.length}件\n車両: ${data.vehicles.length}台\n記録: ${data.records.length}件`;
+        
+        if (!confirm(`以下のデータで上書きします。よろしいですか？\n\n${stats}\n\n※現在のデータは完全に削除されます`)) {
+            return;
+        }
+        
+        projects = data.projects || [];
+        vehicles = data.vehicles || [];
+        records = data.records || [];
+        
+        saveData();
+        renderProjectList();
+        renderVehicleList();
+        renderRecordList();
+        updateAllSelects();
+        updateStats();
+        
+        alert(`✅ データを上書きしました！\n\n${stats}`);
+    }
+
+    // 結合実行
+    function executeMerge(data) {
+        let mergeStats = {
+            projectAdded: 0,
+            projectSkipped: 0,
+            vehicleAdded: 0,
+            vehicleSkipped: 0,
+            recordAdded: 0,
+            recordSkipped: 0
+        };
+        
+        // 工事の結合
+        (data.projects || []).forEach(newProject => {
+            const exists = projects.find(p => 
+                p.name === newProject.name && 
+                p.location === newProject.location
+            );
+            if (!exists) {
+                // 新しいIDを割り当て
+                const mergedProject = {
+                    ...newProject,
+                    id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+                };
+                projects.push(mergedProject);
+                mergeStats.projectAdded++;
+            } else {
+                mergeStats.projectSkipped++;
+            }
+        });
+        
+        // 車両の結合
+        (data.vehicles || []).forEach(newVehicle => {
+            const exists = vehicles.find(v => 
+                v.type === newVehicle.type && 
+                v.number === newVehicle.number
+            );
+            if (!exists) {
+                // 新しいIDを割り当て
+                const mergedVehicle = {
+                    ...newVehicle,
+                    id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+                };
+                vehicles.push(mergedVehicle);
+                mergeStats.vehicleAdded++;
+            } else {
+                mergeStats.vehicleSkipped++;
+            }
+        });
+        
+        // 記録の結合（工事名・車両情報でマッチング）
+        (data.records || []).forEach(newRecord => {
+            // 元データから工事と車両の情報を取得
+            const srcProject = (data.projects || []).find(p => p.id === newRecord.projectId);
+            const srcVehicle = (data.vehicles || []).find(v => v.id === newRecord.vehicleId);
+            
+            if (!srcProject || !srcVehicle) {
+                mergeStats.recordSkipped++;
                 return;
             }
             
-            projects = data.projects || [];
-            vehicles = data.vehicles || [];
-            records = data.records || [];
+            // 現在のデータから対応する工事と車両を検索
+            const destProject = projects.find(p => 
+                p.name === srcProject.name && 
+                p.location === srcProject.location
+            );
+            const destVehicle = vehicles.find(v => 
+                v.type === srcVehicle.type && 
+                v.number === srcVehicle.number
+            );
             
-            saveData();
-            renderProjectList();
-            renderVehicleList();
-            renderRecordList();
-            updateAllSelects();
-            updateStats();
+            if (!destProject || !destVehicle) {
+                mergeStats.recordSkipped++;
+                return;
+            }
             
-            alert(`✅ データを上書きしました！\n\n${stats}`);
-        }
-
-        // 結合実行
-        function executeMerge(data) {
-            let mergeStats = {
-                projectAdded: 0,
-                projectSkipped: 0,
-                vehicleAdded: 0,
-                vehicleSkipped: 0,
-                recordAdded: 0,
-                recordSkipped: 0
-            };
+            // 重複チェック（同じ日付・工事・車両の記録）
+            const exists = records.find(r => 
+                r.date === newRecord.date && 
+                r.projectId === destProject.id && 
+                r.vehicleId === destVehicle.id
+            );
             
-            // 工事の結合
-            (data.projects || []).forEach(newProject => {
-                const exists = projects.find(p => 
-                    p.name === newProject.name && 
-                    p.location === newProject.location
-                );
-                if (!exists) {
-                    // 新しいIDを割り当て
-                    const mergedProject = {
-                        ...newProject,
-                        id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
-                    };
-                    projects.push(mergedProject);
-                    mergeStats.projectAdded++;
-                } else {
-                    mergeStats.projectSkipped++;
-                }
-            });
-            
-            // 車両の結合
-            (data.vehicles || []).forEach(newVehicle => {
-                const exists = vehicles.find(v => 
-                    v.type === newVehicle.type && 
-                    v.number === newVehicle.number
-                );
-                if (!exists) {
-                    // 新しいIDを割り当て
-                    const mergedVehicle = {
-                        ...newVehicle,
-                        id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
-                    };
-                    vehicles.push(mergedVehicle);
-                    mergeStats.vehicleAdded++;
-                } else {
-                    mergeStats.vehicleSkipped++;
-                }
-            });
-            
-            // 記録の結合（工事名・車両情報でマッチング）
-            (data.records || []).forEach(newRecord => {
-                // 元データから工事と車両の情報を取得
-                const srcProject = (data.projects || []).find(p => p.id === newRecord.projectId);
-                const srcVehicle = (data.vehicles || []).find(v => v.id === newRecord.vehicleId);
-                
-                if (!srcProject || !srcVehicle) {
-                    mergeStats.recordSkipped++;
-                    return;
-                }
-                
-                // 現在のデータから対応する工事と車両を検索
-                const destProject = projects.find(p => 
-                    p.name === srcProject.name && 
-                    p.location === srcProject.location
-                );
-                const destVehicle = vehicles.find(v => 
-                    v.type === srcVehicle.type && 
-                    v.number === srcVehicle.number
-                );
-                
-                if (!destProject || !destVehicle) {
-                    mergeStats.recordSkipped++;
-                    return;
-                }
-                
-                // 重複チェック（同じ日付・工事・車両の記録）
-                const exists = records.find(r => 
-                    r.date === newRecord.date && 
-                    r.projectId === destProject.id && 
-                    r.vehicleId === destVehicle.id
-                );
-                
-                if (!exists) {
-                    const mergedRecord = {
-                        id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-                        date: newRecord.date,
-                        projectId: destProject.id,
-                        vehicleId: destVehicle.id,
-                        count: newRecord.count
-                    };
-                    records.push(mergedRecord);
-                    mergeStats.recordAdded++;
-                } else {
-                    mergeStats.recordSkipped++;
-                }
-            });
-            
-            saveData();
-            renderProjectList();
-            renderVehicleList();
-            renderRecordList();
-            updateAllSelects();
-            updateStats();
-            
-            const resultMessage = `✅ データを結合しました！
+            if (!exists) {
+                const mergedRecord = {
+                    id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                    date: newRecord.date,
+                    projectId: destProject.id,
+                    vehicleId: destVehicle.id,
+                    count: newRecord.count
+                };
+                records.push(mergedRecord);
+                mergeStats.recordAdded++;
+            } else {
+                mergeStats.recordSkipped++;
+            }
+        });
+        
+        saveData();
+        renderProjectList();
+        renderVehicleList();
+        renderRecordList();
+        updateAllSelects();
+        updateStats();
+        
+        const resultMessage = `✅ データを結合しました！
+```
 
 【追加】
 工事: ${mergeStats.projectAdded}件
@@ -2373,82 +2527,85 @@
 工事: ${projects.length}件
 車両: ${vehicles.length}台
 記録: ${records.length}件`;
-            
-            alert(resultMessage);
-        }
 
-        // データインポート（既存関数を残す）
-        function importData() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'application/json,.json,.txt,text/plain';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    try {
-                        const data = JSON.parse(event.target.result);
+```
+        alert(resultMessage);
+    }
+
+    // データインポート（既存関数を残す）
+    function importData() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json,.json,.txt,text/plain';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    
+                    if (confirm('データを読み込みますか？\n既存のデータは上書きされます。')) {
+                        projects = data.projects || [];
+                        vehicles = data.vehicles || [];
+                        records = data.records || [];
                         
-                        if (confirm('データを読み込みますか？\n既存のデータは上書きされます。')) {
-                            projects = data.projects || [];
-                            vehicles = data.vehicles || [];
-                            records = data.records || [];
-                            
-                            saveData();
-                            renderProjectList();
-                            renderVehicleList();
-                            renderRecordList();
-                            updateAllSelects();
-                            updateStats();
-                            
-                            alert('✅ データを読み込みました！');
-                        }
-                    } catch (error) {
-                        alert('❌ ファイルの読み込みに失敗しました。');
+                        saveData();
+                        renderProjectList();
+                        renderVehicleList();
+                        renderRecordList();
+                        updateAllSelects();
+                        updateStats();
+                        
+                        alert('✅ データを読み込みました！');
                     }
-                };
-                reader.readAsText(file);
+                } catch (error) {
+                    alert('❌ ファイルの読み込みに失敗しました。');
+                }
             };
-            input.click();
-        }
+            reader.readAsText(file);
+        };
+        input.click();
+    }
 
-        // 自動バックアップ
-        function initAutoBackup() {
-            checkBackupStatus();
-            setInterval(checkBackupStatus, 60000); // 1分ごと
-        }
+    // 自動バックアップ
+    function initAutoBackup() {
+        checkBackupStatus();
+        setInterval(checkBackupStatus, 60000); // 1分ごと
+    }
 
-        function checkBackupStatus() {
-            const lastBackup = localStorage.getItem('lastBackupTime');
-            
-            if (!lastBackup) {
-                updateBackupStatus('warning', '未バックアップ');
-                return;
-            }
-            
-            const lastBackupDate = new Date(lastBackup);
-            const now = new Date();
-            const hoursDiff = (now - lastBackupDate) / (1000 * 60 * 60);
-            
-            if (hoursDiff < 24) {
-                updateBackupStatus('success', 'バックアップ済み');
-            } else {
-                updateBackupStatus('warning', 'バックアップ推奨');
-            }
+    function checkBackupStatus() {
+        const lastBackup = localStorage.getItem('lastBackupTime');
+        
+        if (!lastBackup) {
+            updateBackupStatus('warning', '未バックアップ');
+            return;
         }
+        
+        const lastBackupDate = new Date(lastBackup);
+        const now = new Date();
+        const hoursDiff = (now - lastBackupDate) / (1000 * 60 * 60);
+        
+        if (hoursDiff < 24) {
+            updateBackupStatus('success', 'バックアップ済み');
+        } else {
+            updateBackupStatus('warning', 'バックアップ推奨');
+        }
+    }
 
-        function updateBackupStatus(status, text) {
-            const statusEl = document.getElementById('backupStatus');
-            if (status === 'success') {
-                statusEl.textContent = '✅ ' + text;
-            } else if (status === 'warning') {
-                statusEl.textContent = '⚠️ ' + text;
-            }
+    function updateBackupStatus(status, text) {
+        const statusEl = document.getElementById('backupStatus');
+        if (status === 'success') {
+            statusEl.textContent = '✅ ' + text;
+        } else if (status === 'warning') {
+            statusEl.textContent = '⚠️ ' + text;
         }
+    }
 
-        function manualBackup() {
-            shareData();
-        }
-    </script>
+    function manualBackup() {
+        shareData();
+    }
+</script>
+```
+
 </body>
 </html>
