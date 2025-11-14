@@ -521,7 +521,7 @@
     <div class="container">
         <div class="header">
             <h1>🚚 ダンプトラック運搬台数管理システム</h1>
-            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.0.1）</p>
+            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.0.2）</p>
             <div class="backup-status" id="backupStatus" onclick="manualBackup()">
                 💾 バックアップ準備中...
             </div>
@@ -666,6 +666,13 @@
     <div id="records" class="tab-content">
         <div class="card">
             <h2>📝 運搬記録入力</h2>
+            <div id="recordFormMessage" style="display: none; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <strong>⚠️ 先に登録が必要です：</strong>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li id="needProjectMessage" style="display: none;">「工事マスター」タブで工事を登録してください</li>
+                    <li id="needVehicleMessage" style="display: none;">「車両マスター」タブで車両を登録してください</li>
+                </ul>
+            </div>
             <div class="form-grid">
                 <div class="form-group">
                     <label>日付 *</label>
@@ -791,6 +798,20 @@
         
         if (tabName === 'home') {
             updateStats();
+        }
+        
+        // 運搬記録タブを開いたときのチェック
+        if (tabName === 'records') {
+            if (projects.length === 0 || vehicles.length === 0) {
+                let message = '⚠️ 運搬記録を入力する前に、以下を登録してください：\n\n';
+                if (projects.length === 0) {
+                    message += '• 工事マスター（工事の登録）\n';
+                }
+                if (vehicles.length === 0) {
+                    message += '• 車両マスター（車両の登録）\n';
+                }
+                setTimeout(() => alert(message), 100);
+            }
         }
     }
 
@@ -1043,10 +1064,30 @@
         const date = document.getElementById('recordDate').value;
         const projectId = document.getElementById('recordProject').value;
         const vehicleId = document.getElementById('recordVehicle').value;
-        const count = parseInt(document.getElementById('recordCount').value);
+        const countValue = document.getElementById('recordCount').value;
+        const count = parseInt(countValue);
         
-        if (!date || !projectId || !vehicleId || !count || count < 1) {
-            alert('❌ すべての項目を正しく入力してください。');
+        // デバッグ情報
+        console.log('運搬記録追加:', { date, projectId, vehicleId, countValue, count });
+        
+        // 詳細なバリデーション
+        if (!date) {
+            alert('❌ 日付を入力してください。');
+            return;
+        }
+        
+        if (!projectId) {
+            alert('❌ 工事を選択してください。\n\n先に「工事マスター」タブで工事を登録してください。');
+            return;
+        }
+        
+        if (!vehicleId) {
+            alert('❌ 車両を選択してください。\n\n先に「車両マスター」タブで車両を登録してください。');
+            return;
+        }
+        
+        if (!countValue || isNaN(count) || count < 1) {
+            alert('❌ 運搬台数を正しく入力してください。\n（1以上の数値を入力）');
             return;
         }
         
@@ -1146,31 +1187,64 @@
     function updateAllSelects() {
         // 運搬記録の工事選択
         const recordProject = document.getElementById('recordProject');
-        recordProject.innerHTML = '<option value="">選択してください</option>';
-        projects.forEach(project => {
-            recordProject.innerHTML += `<option value="${project.id}">${project.name}</option>`;
-        });
+        if (recordProject) {
+            recordProject.innerHTML = '<option value="">選択してください</option>';
+            projects.forEach(project => {
+                recordProject.innerHTML += `<option value="${project.id}">${project.name}</option>`;
+            });
+            console.log('工事選択肢を更新:', projects.length + '件');
+        }
         
         // 運搬記録の車両選択
         const recordVehicle = document.getElementById('recordVehicle');
-        recordVehicle.innerHTML = '<option value="">選択してください</option>';
-        vehicles.forEach(vehicle => {
-            recordVehicle.innerHTML += `<option value="${vehicle.id}">${vehicle.type} (${vehicle.number})</option>`;
-        });
+        if (recordVehicle) {
+            recordVehicle.innerHTML = '<option value="">選択してください</option>';
+            vehicles.forEach(vehicle => {
+                recordVehicle.innerHTML += `<option value="${vehicle.id}">${vehicle.type} (${vehicle.number})</option>`;
+            });
+            console.log('車両選択肢を更新:', vehicles.length + '台');
+        }
         
         // 集計の工事選択
         const summaryProject = document.getElementById('summaryProject');
-        summaryProject.innerHTML = '<option value="">すべて</option>';
-        projects.forEach(project => {
-            summaryProject.innerHTML += `<option value="${project.id}">${project.name}</option>`;
-        });
+        if (summaryProject) {
+            summaryProject.innerHTML = '<option value="">すべて</option>';
+            projects.forEach(project => {
+                summaryProject.innerHTML += `<option value="${project.id}">${project.name}</option>`;
+            });
+        }
         
         // 集計の車両選択
         const summaryVehicle = document.getElementById('summaryVehicle');
-        summaryVehicle.innerHTML = '<option value="">すべて</option>';
-        vehicles.forEach(vehicle => {
-            summaryVehicle.innerHTML += `<option value="${vehicle.id}">${vehicle.type} (${vehicle.number})</option>`;
-        });
+        if (summaryVehicle) {
+            summaryVehicle.innerHTML = '<option value="">すべて</option>';
+            vehicles.forEach(vehicle => {
+                summaryVehicle.innerHTML += `<option value="${vehicle.id}">${vehicle.type} (${vehicle.number})</option>`;
+            });
+        }
+        
+        // 警告メッセージの表示/非表示
+        updateRecordFormMessage();
+    }
+    
+    // 運搬記録フォームの警告メッセージ更新
+    function updateRecordFormMessage() {
+        const messageBox = document.getElementById('recordFormMessage');
+        const needProjectMsg = document.getElementById('needProjectMessage');
+        const needVehicleMsg = document.getElementById('needVehicleMessage');
+        
+        if (!messageBox || !needProjectMsg || !needVehicleMsg) return;
+        
+        const needProject = projects.length === 0;
+        const needVehicle = vehicles.length === 0;
+        
+        if (needProject || needVehicle) {
+            messageBox.style.display = 'block';
+            needProjectMsg.style.display = needProject ? 'list-item' : 'none';
+            needVehicleMsg.style.display = needVehicle ? 'list-item' : 'none';
+        } else {
+            messageBox.style.display = 'none';
+        }
     }
 
     // 統計更新
