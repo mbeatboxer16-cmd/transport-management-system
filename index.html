@@ -175,6 +175,11 @@
         box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
 
+    .form-group input.error {
+        border-color: #dc3545;
+        background-color: #fff5f5;
+    }
+
     .btn {
         padding: 12px 24px;
         border: none;
@@ -521,7 +526,7 @@
     <div class="container">
         <div class="header">
             <h1>🚚 ダンプトラック運搬台数管理システム</h1>
-            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.0.3）</p>
+            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.0.4）</p>
             <div class="backup-status" id="backupStatus" onclick="manualBackup()">
                 💾 バックアップ準備中...
             </div>
@@ -692,7 +697,8 @@
                 </div>
                 <div class="form-group">
                     <label>運搬台数 *</label>
-                    <input type="number" id="recordCount" min="1" placeholder="例：15">
+                    <input type="number" id="recordCount" min="1" step="1" placeholder="例：15" inputmode="numeric" pattern="[0-9]*">
+                    <small style="color: #6c757d; font-size: 12px; display: block; margin-top: 5px;">※ 1以上の整数で入力（例：10）</small>
                 </div>
             </div>
             <div class="btn-group">
@@ -1077,65 +1083,107 @@
         container.innerHTML = html;
     }
 
-    // 運搬記録追加・更新
+    // 運搬記録追加・更新（改善版）
     function addRecord() {
         try {
             console.log('=== 運搬記録追加開始 ===');
             
-            const date = document.getElementById('recordDate').value;
-            console.log('日付:', date);
+            // 要素の取得
+            const dateInput = document.getElementById('recordDate');
+            const projectSelect = document.getElementById('recordProject');
+            const vehicleSelect = document.getElementById('recordVehicle');
+            const countInput = document.getElementById('recordCount');
             
-            const projectId = document.getElementById('recordProject').value;
-            console.log('工事ID:', projectId);
+            // エラースタイルをクリア
+            if (countInput) countInput.classList.remove('error');
             
-            const vehicleId = document.getElementById('recordVehicle').value;
-            console.log('車両ID:', vehicleId);
+            // 値の取得
+            const date = dateInput ? dateInput.value : '';
+            const projectId = projectSelect ? projectSelect.value : '';
+            const vehicleId = vehicleSelect ? vehicleSelect.value : '';
+            const countValue = countInput ? countInput.value.trim() : '';
             
-            const countValue = document.getElementById('recordCount').value;
-            console.log('運搬台数(文字列):', countValue);
+            console.log('取得した値:', { date, projectId, vehicleId, countValue });
             
-            const count = parseInt(countValue);
-            console.log('運搬台数(数値):', count);
-            
-            // 詳細なバリデーション
+            // 日付チェック
             if (!date) {
-                console.error('エラー: 日付が未入力');
                 alert('❌ 日付を入力してください。');
+                if (dateInput) dateInput.focus();
                 return;
             }
             
-            if (!projectId) {
-                console.error('エラー: 工事が未選択');
+            // 工事チェック
+            if (!projectId || projectId === '') {
                 alert('❌ 工事を選択してください。\n\n先に「工事マスター」タブで工事を登録してください。');
+                if (projectSelect) projectSelect.focus();
                 return;
             }
             
-            if (!vehicleId) {
-                console.error('エラー: 車両が未選択');
+            // 車両チェック
+            if (!vehicleId || vehicleId === '') {
                 alert('❌ 車両を選択してください。\n\n先に「車両マスター」タブで車両を登録してください。');
+                if (vehicleSelect) vehicleSelect.focus();
                 return;
             }
             
-            if (!countValue) {
-                console.error('エラー: 運搬台数が未入力');
-                alert('❌ 運搬台数を入力してください。');
+            // 運搬台数チェック
+            if (!countValue || countValue === '') {
+                alert('❌ 運搬台数を入力してください。\n\n例：10');
+                if (countInput) {
+                    countInput.classList.add('error');
+                    countInput.focus();
+                }
                 return;
             }
             
+            // 数値に変換
+            const count = parseInt(countValue, 10);
+            console.log('変換後の運搬台数:', count, 'type:', typeof count);
+            
+            // 数値の妥当性チェック
             if (isNaN(count)) {
-                console.error('エラー: 運搬台数が数値ではない');
-                alert('❌ 運搬台数は数値で入力してください。');
+                alert('❌ 運搬台数は数値で入力してください。\n\n入力された値: ' + countValue + '\n正しい例: 10');
+                if (countInput) {
+                    countInput.classList.add('error');
+                    countInput.value = '';
+                    countInput.focus();
+                }
                 return;
             }
             
             if (count < 1) {
-                console.error('エラー: 運搬台数が1未満');
-                alert('❌ 運搬台数は1以上で入力してください。');
+                alert('❌ 運搬台数は1以上で入力してください。\n\n入力された値: ' + count);
+                if (countInput) {
+                    countInput.classList.add('error');
+                    countInput.value = '';
+                    countInput.focus();
+                }
                 return;
             }
             
-            console.log('バリデーション通過');
+            if (count > 9999) {
+                alert('❌ 運搬台数は9999以下で入力してください。\n\n入力された値: ' + count);
+                if (countInput) {
+                    countInput.classList.add('error');
+                    countInput.focus();
+                }
+                return;
+            }
             
+            // 小数チェック（parseIntを使っているので整数になっているが念のため）
+            if (countValue.includes('.') || countValue.includes(',')) {
+                alert('❌ 運搬台数は整数で入力してください（小数点は使用できません）。\n\n入力された値: ' + countValue + '\n正しい例: 10');
+                if (countInput) {
+                    countInput.classList.add('error');
+                    countInput.value = '';
+                    countInput.focus();
+                }
+                return;
+            }
+            
+            console.log('✓ すべてのバリデーション通過');
+            
+            // データの保存
             if (editingRecordId) {
                 console.log('編集モード:', editingRecordId);
                 const record = records.find(r => r.id === editingRecordId);
@@ -1147,45 +1195,52 @@
                     console.log('記録を更新:', record);
                 } else {
                     console.error('編集対象の記録が見つかりません');
+                    alert('❌ 編集対象の記録が見つかりません。');
+                    return;
                 }
                 editingRecordId = null;
             } else {
                 console.log('新規追加モード');
                 const newRecord = {
                     id: Date.now().toString(),
-                    date,
-                    projectId,
-                    vehicleId,
-                    count
+                    date: date,
+                    projectId: projectId,
+                    vehicleId: vehicleId,
+                    count: count
                 };
                 records.push(newRecord);
                 console.log('新しい記録を追加:', newRecord);
                 console.log('全記録数:', records.length);
             }
             
-            console.log('データ保存開始');
+            // データ保存
+            console.log('データ保存中...');
             saveData();
-            console.log('データ保存完了');
+            console.log('✓ データ保存完了');
             
-            console.log('リスト再描画開始');
+            // リスト再描画
+            console.log('リスト再描画中...');
             renderRecordList();
-            console.log('リスト再描画完了');
+            console.log('✓ リスト再描画完了');
             
-            console.log('フォームクリア開始');
+            // フォームクリア
+            console.log('フォームクリア中...');
             clearRecordForm();
-            console.log('フォームクリア完了');
+            console.log('✓ フォームクリア完了');
             
-            console.log('統計更新開始');
+            // 統計更新
+            console.log('統計更新中...');
             updateStats();
-            console.log('統計更新完了');
+            console.log('✓ 統計更新完了');
             
-            console.log('=== 運搬記録追加成功 ===');
+            console.log('=== ✅ 運搬記録追加成功！ ===');
             alert('✅ 運搬記録を保存しました！');
+            
         } catch (error) {
-            console.error('=== 運搬記録追加でエラー発生 ===');
-            console.error('エラー内容:', error);
-            console.error('エラースタック:', error.stack);
-            alert('❌ エラーが発生しました。\n\nブラウザのコンソール（F12）を開いて詳細を確認してください。\n\nエラー: ' + error.message);
+            console.error('=== ❌ エラー発生 ===');
+            console.error('エラー:', error);
+            console.error('スタック:', error.stack);
+            alert('❌ エラーが発生しました。\n\nエラー内容: ' + error.message + '\n\nブラウザのコンソール（F12）を開いて詳細を確認してください。');
         }
     }
 
@@ -1394,10 +1449,15 @@
 
     function clearRecordForm() {
         const today = new Date().toISOString().split('T')[0];
+        const countInput = document.getElementById('recordCount');
+        
         document.getElementById('recordDate').value = today;
         document.getElementById('recordProject').value = '';
         document.getElementById('recordVehicle').value = '';
-        document.getElementById('recordCount').value = '';
+        if (countInput) {
+            countInput.value = '';
+            countInput.classList.remove('error');
+        }
         editingRecordId = null;
     }
 
