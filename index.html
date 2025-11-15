@@ -668,9 +668,9 @@
     <div class="container">
         <div class="header">
             <h1>🚚 ダンプトラック運搬台数管理システム</h1>
-            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.1.1）</p>
-            <div class="backup-status" id="backupStatus" onclick="manualBackup()">
-                💾 バックアップ準備中...
+            <p>工事別・車両別の運搬台数を簡単に記録・集計できます（v1.1.2）</p>
+            <div class="backup-status" id="backupStatus" onclick="manualBackup()" title="データをバックアップして安全に保管できます">
+                💾 クリックでバックアップ
             </div>
         </div>
 
@@ -734,7 +734,10 @@
 
             <div class="card" style="margin-top: 40px;">
                 <h2>💾 データ管理</h2>
-                <p style="color: #6c757d; margin-bottom: 20px;">データのバックアップ、復元、結合を行えます</p>
+                <p style="color: #6c757d; margin-bottom: 20px;">
+                    データのバックアップ、復元、結合を行えます<br>
+                    <small>※ これらの操作は任意です。システムは通常通り使用できます</small>
+                </p>
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="saveDataToFile()">
                         💾 データを保存
@@ -2297,7 +2300,7 @@
     // データ保存機能
     function saveDataToFile() {
         const data = {
-            version: '1.1.1',
+            version: '1.1.2',
             projects,
             vehicles,
             records,
@@ -2577,7 +2580,7 @@
         const lastBackup = localStorage.getItem('lastBackupTime');
         
         if (!lastBackup) {
-            updateBackupStatus('warning', '未バックアップ');
+            updateBackupStatus('info', 'クリックでバックアップ');
             return;
         }
         
@@ -2596,8 +2599,13 @@
         const statusEl = document.getElementById('backupStatus');
         if (status === 'success') {
             statusEl.textContent = '✅ ' + text;
+            statusEl.style.background = 'rgba(6, 199, 85, 0.3)';
         } else if (status === 'warning') {
             statusEl.textContent = '⚠️ ' + text;
+            statusEl.style.background = 'rgba(255, 193, 7, 0.3)';
+        } else if (status === 'info') {
+            statusEl.textContent = '💾 ' + text;
+            statusEl.style.background = 'rgba(255, 255, 255, 0.2)';
         }
     }
 
